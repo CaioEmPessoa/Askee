@@ -2,46 +2,62 @@ from os import getenv
 from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 
-def connect():
-    print("Starting dabase connection...")
+class DBConnectionHandler:
+    def __init__(self):
+        self.__DB_INFO = {
+            "ip"    : getenv("DATABASE_IP")       or "localhost",
+            "port"  : getenv("DATABASE_PORT")     or "27017",
+            "user"  : getenv("DATABASE_USER")     or "admin",
+            "psswrd": getenv("DATABASE_PASSWORD") or "password",
 
-    DB_INFO = {
-        "ip"    : getenv("DATABASE_IP")       or "localhost",
-        "port"  : getenv("DATABASE_PORT")     or "27017",
-        "user"  : getenv("DATABASE_USER")     or "admin",
-        "psswrd": getenv("DATABASE_PASSWORD") or "password",
+            "name"       : getenv("DATABASE_NAME")       or "Askee",
+            "collection" : getenv("DATABASE_COLLECTION") or "local"
+        }
 
-        "name"       : getenv("DATABASE_NAME")       or "Askee",
-        "collection" : getenv("DATABASE_COLLECTION") or "local"
-    }
+        self.__CONN_STR = "mongodb://{}:{}@{}:{}/?authSource={}".format(
+            self.__DB_INFO["user"],
+            self.__DB_INFO["psswrd"],
+            self.__DB_INFO["ip"],
+            self.__DB_INFO["port"],
+            self.__DB_INFO["name"]
+        )
 
-    CONN_STR = f"mongodb://{DB_INFO["user"]}:{DB_INFO["psswrd"]}@{DB_INFO["ip"]}:{DB_INFO["port"]}/?authSource={DB_INFO["name"]}"
-
-    # esse print é completamente desnecessario eu so quis fazer pq to no python posso fazer essas coisas idiotas kk
-    conn_pswr_lctn = len(f"mongodb://{DB_INFO["user"]}:")
-    print("Generated connection string: " + f"{CONN_STR[:conn_pswr_lctn]}****{CONN_STR[conn_pswr_lctn+len(DB_INFO["psswrd"]):]}")
+        self.__client = None
+        self.__db_conn = None
 
 
-    # Creates connection to database
-    CLIENT = MongoClient(str(CONN_STR), serverSelectionTimeoutMS=5000)
+    def connect(self):
+        print("Starting dabase connection...")
 
-    # Tests connection
-    try:
-        CLIENT.server_info()
-    except (errors.ServerSelectionTimeoutError, errors.OperationFailure) as err:
-        print("Connection failed!")
-        raise err
+        conn_pswr_lctn = len(f"mongodb://{self.__DB_INFO["user"]}:") # esse print é completamente desnecessario eu so quis fazer pq to no python posso fazer essas coisas idiotas kk
+        print("Generated connection string: " +
+            self.__CONN_STR[:conn_pswr_lctn] +
+            self.__CONN_STR[conn_pswr_lctn+len(self.__DB_INFO["psswrd"]):]
+        )
 
-    # Gets connection and collection
-    DB_CONN = CLIENT[DB_INFO['name']]
+        # Creates connection to database
+        self.__client = MongoClient(str(self.__CONN_STR), serverSelectionTimeoutMS=5000)
 
-    print("Connected to database!")
+        # Tests connection
+        try:
+            self.__client.server_info()
+        except (errors.ServerSelectionTimeoutError, errors.OperationFailure) as err:
+            print("Connection failed!")
+            raise err
 
-    return DB_CONN
+        # Gets connection
+        self.__db_conn = self.__client[self.__DB_INFO['name']]
+
+        print("Connected to database!")
+
+        return self.__db_conn
 
 if __name__ == "__main__":
 
     # Test values
     load_dotenv()
-    conn = connect()
+    conn_hndlr = DBConnectionHandler()
+
+    conn = conn_hndlr.connect()
+
     print(conn.get_collection("local"))
