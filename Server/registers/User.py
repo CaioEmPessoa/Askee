@@ -1,21 +1,23 @@
-from main import app
+from flask import Blueprint
 
-@app.route('/users', methods=['POST'])
+user_bp = Blueprint('user', __name__)
+
+@user_bp.route('/users', methods=['POST'])
 def new_user():
-    pass
+    return "Funcionando POST user"
 
-@app.route('/users', methods=['GET'])
+@user_bp.route('/users', methods=['GET'])
 def list_users():
-    pass
+    return "Funcionando GET user"
 
-@app.route('/users/<id>', methods=['GET'])
+@user_bp.route('/users/<id>', methods=['GET'])
 def list_user(id):
-    pass
+    return "Funcionando GET ID user"
 
-@app.route('/users/<id>', methods=['PUT'])
+@user_bp.route('/users/<id>', methods=['PUT'])
 def update_user(id):
     pass
 
-@app.route('/users/<id>', methods=['DELETE'])
+@user_bp.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
     pass

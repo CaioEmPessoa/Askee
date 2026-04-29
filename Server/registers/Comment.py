@@ -7,7 +7,7 @@ def new_comments():
 
 @comment_bp.route('/comments', methods=['GET'])
 def list_allComments():
-    pass
+    return "Listar comentario funcionando"
 
 @comment_bp.route('/comments/<id>', methods=['GET'])
 def list_comments(id):

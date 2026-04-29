@@ -8,16 +8,16 @@ def add_category():
 
 @category_bp.route('/categories', methods=['GET'])
 def list_categories():
-    return "funcionando"
+    return "funcionando get categorias"
 
 @category_bp.route('/categories/<id>', methods=['GET'])
 def list_category(id):
-    pass
+    return "funcionando get id categorias"
 
 @category_bp.route('/categories/<id>', methods=['PUT'])
 def update_category(id):
-    pass
+    return "funcionando put categorias"
 
 @category_bp.route('/categories/<id>', methods=['DELETE'])
 def delete_category(id):
-    pass
+    return "funcionando delete categorias"

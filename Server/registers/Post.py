@@ -1,22 +1,24 @@
 from .RegisterBase import RegisterBase
-from main import app
+from flask import Blueprint
+
+post_bp = Blueprint('post', __name__)
 
 class Post_repository(RegisterBase):
     def __init__(self, db_conn):
         super().__init__("local", db_conn)
 
-@app.route('/post', methods=['POST'])
+@post_bp.route('/post', methods=['POST'])
 def new_post():
-    pass
+    return "Teste post"
 
-@app.route('/post', methods=['GET'])
-def list_posts(id):
-    pass
+@post_bp.route('/post', methods=['GET'])
+def list_posts():
+    return "Teste post GET"
 
-@app.route('/post/<id>', methods=['GET'])
+@post_bp.route('/post/<id>', methods=['GET'])
 def list_post(id):
     pass
 
-@app.route('/post/<id>', methods=['DELETE'])
+@post_bp.route('/post/<id>', methods=['DELETE'])
 def delete_post(id):
     pass
