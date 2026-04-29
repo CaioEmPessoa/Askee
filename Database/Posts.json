@@ -1,0 +1,16 @@
+[
+  {
+    "id": "Exemplo",
+    "date": "Exemplo",
+    "title": "Exemplo",
+    "content": "Exemplo",
+    "user_id": "Exemplo",
+    "category_id": "Exemplo",
+    "comments": [
+      {
+        "user_id": "Exemplo",
+        "content": "Exemplo"
+      }
+    ]
+  }
+]
