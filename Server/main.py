@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from database import connection
 from flask import Flask
-from registers import blueprints
+from controllers import blueprints
 
 app = Flask(__name__)
 
@@ -14,4 +14,4 @@ conn = connection.connect()
 print(conn.get_collection("local"))
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=6969)
