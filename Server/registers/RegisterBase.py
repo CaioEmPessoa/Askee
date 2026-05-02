@@ -1,72 +1,88 @@
-from bson.objectid import ObjectId
+import json
+from os import getcwd
 
 class RegisterBase():
-    def __init__(self, db_coll_name, db_conn):
-        self.__collection_name = db_coll_name
-        self.__db_connection = db_conn
-        self.__collection = self.__db_connection.get_collection(self.__collection_name)
+    def __init__(self, db_register_name):
+        self.__register_name = db_register_name
+        self.__register_location = f"{getcwd()}/Database/{self.__register_name}.json"
+
+        self.cache = None
+        self.__build_cache()
 
     ## ===== HELPER FUNCTIONS =====
-    def __parse_hidden_fields(self, hiddenFields, showId=False):
-        result = {}
-
-        if not showId:
-            result["_id"] = 0
-
-        for field in hiddenFields:
-            result[field] = 0
-
-        return result if result else None  # None means return all fields
-
-    def __parse_field_exists(self, fields: list):
-        result = {}
-
-        for field in fields:
-            result[field] = {"$exists": True}
+    def __read_file (self):
+        result = ''
+        with open(self.__register_location, "r") as r:
+            result = json.load(r)
 
         return result
 
-    def __filter_many(self, filters, hiddenFields, showId, raw=False):
-        data = self.__collection.find(filters, self.__parse_hidden_fields(hiddenFields, showId))
-        response = data if raw else [i for i in data]
-        return response
+    def __write_file(self, info):
+        with open(self.__register_location, "w") as w:
+            json.dump(info, w, indent=4)
 
-    def __filter_one(self, filters, hiddenFields, showId):
-        data = self.__collection.find_one(filters, self.__parse_hidden_fields(hiddenFields, showId))
-        return data
+        self.__build_cache()
+
+    def __write_cache(self):
+        converted_values = list(self.cache.values())
+        self.__write_file(converted_values)
+
+    def __build_cache(self):
+        self.cache = {item['id']: item for item in self.__read_file()}
+
+    def __gen_id(self):
+        try: new_id = max(self.cache)+1
+        except ValueError: new_id = 1
+        except TypeError: raise Exception(f"{self.__register_name} possui um registro inválido!")
+        return new_id
+
+    def __update_on_id(self, id, info):
+        if id not in self.cache:
+            return False
+
+        info['id'] = id
+
+        self.cache[id] = info
+        self.__write_cache()
+
+        return self.cache[id]
+
+    def __append_info(self, info):
+        if 'id' in info:
+            return False
+
+        new_id = self.__gen_id()
+
+        info['id'] = new_id
+
+        self.cache[new_id] = info
+        self.__write_cache()
+
+        return self.cache[new_id]
+
+    def __delete_on_id(self, id):
+        if id not in self.cache or id == None:
+            return False
+
+        self.cache.pop(id)
+        self.__write_cache()
+
+        return True
 
     ## ===== INSERT FUNCTIONS =====
-    def insert_document(self, document):
-        self.__collection.insert_one(document)
+    def new_entry(self, info):
+        return self.__append_info(info)
 
-    def insert_documents(self, documents):
-        self.__collection.insert_many(documents)
+    def update_on_id(self, id, info):
+        updt_info = self.cache[id] | info
+        return self.__update_on_id(id, updt_info)
+
+    def delete_on_id(self, id):
+        return self.__delete_on_id(id)
 
     ## ===== QUERY FUNCTIONS =====
-    # get all without filters
-    def select_all(self, hiddenFields=[], showId=False):
-        return self.__filter_many({}, hiddenFields, showId)
+    def get_all(self):
+        return self.cache
 
-    # get by id
-    def select_by_id(self, id, hiddenFields=[], showId=True):
-        return self.__filter_one({"_id": ObjectId(id)}, hiddenFields, showId)
-
-    # get with filters
-    def select_many(self, filters, hiddenFields=[], showId=False):
-        return self.__filter_many(filters, hiddenFields, showId)
-
-    # get with filters but only returns ONE
-    def select_one(self, filters, hiddenFields=[], showId=False):
-        return self.__filter_one(filters, hiddenFields, showId)
-
-
-    ## ===== APPEND QUERIES =====
-    # Não sei se essas funcoes sao taaooo uteis assim mas elas servem bem como
-    # referencia caso alguem vá fazer queries mais complexas.
-    def select_filter_or(self, filters: list, hiddenFields=[], showId=False):
-        response = self.__filter_many({"$or": filters}, hiddenFields, showId)
-        return response
-
-    def select_filter_exists(self, fields, hiddenFields=[], showId=False):
-        response = self.__filter_many(self.__parse_field_exists(fields), hiddenFields, showId)
-        return response
+    def get_by_id(self, id):
+        return self.cache[id] if id in self.cache else None
