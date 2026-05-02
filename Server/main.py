@@ -1,17 +1,16 @@
 from dotenv import load_dotenv
 from database import connection
 from flask import Flask
-from controllers import blueprints
+from registers import blueprints
+import json
+
+load_dotenv()
 
 app = Flask(__name__)
 
 for bp in blueprints:
     app.register_blueprint(bp)
 
-load_dotenv()
-
-conn = connection.connect()
-print(conn.get_collection("local"))
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=6969)
+    app.run(host='localhost', port=5000)
