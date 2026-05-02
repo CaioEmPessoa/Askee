@@ -2,7 +2,7 @@
   {
     "id": "Exemplo",
     "name": "Exemplo",
-    "profile_picture": "Exemplo",
+    "icon": "Exemplo",
     "about": "Exemplo",
     "is_super": true,
     "is_moderator": true
