@@ -1,4 +1,5 @@
 import json
+import uuid
 from os import getcwd
 
 class RegisterBase():
@@ -31,10 +32,10 @@ class RegisterBase():
         self.cache = {item['id']: item for item in self.__read_file()}
 
     def __gen_id(self):
-        try: new_id = max(self.cache)+1
-        except ValueError: new_id = 1
-        except TypeError: raise Exception(f"{self.__register_name} possui um registro inválido!")
-        return new_id
+        # try: new_id = max(self.cache)+1
+        # except ValueError: new_id = 1
+        # except TypeError: raise Exception(f"{self.__register_name} possui um registro inválido!")
+        return uuid.uuid4().hex
 
     def __update_on_id(self, id, info):
         if id not in self.cache:
