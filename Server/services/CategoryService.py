@@ -1,13 +1,6 @@
 import json
 import uuid
 
-exemplo_request = {
-    "id": "   Exemplo.  ",
-    "name": "Nome",
-    "description": "Easasxemplo.  ",
-    "icon": "Elo",
-    "moderators": ["Exemplo"]
-  }
 
 # Temporário
 def build_response(status, message, data = {}):
@@ -17,11 +10,8 @@ def build_response(status, message, data = {}):
      "data": data
   }
 
-with open('/Users/joao/Documents/Outros/Askee/Database/Categories.json', 'r') as file:
-    data_dict = json.load(file)
-
 class CategoryService:
-  def _init_(self, category_repository):
+  def __init__(self, category_repository):
     self.repository = category_repository
 
   def add_category(self, data):
@@ -64,47 +54,58 @@ class CategoryService:
     # Ver lógica dos moderadores
 
     new_category = {
-       "id": uuid.uuid4().hex,
        "name": name.strip(),
        "description": description.strip(),
        "icon": icon.strip(),
        "moderators": []
     }
 
-    # Inserir no JSON
-
-    return build_response(200, "Categoria criada com sucesso.", new_category)
+    response = self.repository.new_entry(new_category)
+    if response:
+      return build_response(200, "Categoria criada com sucesso.", response)
+    else:
+      return build_response(500, "Houve um erro ao criar a categoria.")
 
   def list_categories(self):
-    categories = [] # Lógica de listagem
+    response = self.repository.get_all(id)
 
     if len(categories) == 0:
       return build_response(200, "Nenhuma categoria encontrada.")
-
     else:
       return build_response(200, "Categorias encontradas com sucesso.", categories)
 
+  def get_category(self, id):
+    response = self.repository.get_by_id(id)
+
+    if response:
+      return build_response(200, "Categoria encontrada!", response)
+    else:
+      return build_response(200, "Nenhuma categoria encontrada.")
+
   def update_category(self, id, data):
-    category = {} # Lógica de busca
+    category = self.repository.get_by_id(id)
+    response = False
 
     # Validar novos dados
 
-    updated_category = category | data
+    response = self.repository.update_on_id(id)
 
-    # Atualizar o JSON
+    if response:
+      return build_response(200, "Categoria atualizada com sucesso.", response)
+    else:
+      return build_response(500, "Houve um erro ao atualizar a categoria.")
 
-    return build_response(200, "Categoria atualizada com sucesso.", updated_category)
 
   def delete_category(self, id):
-    category = {} # Lógica de busca
+    category = self.repository.get_by_id(id)
+    response = False
 
     if not category:
       return build_response(400, "Categoria não encontrada.")
 
-    # Deletar do JSON
+    response = self.repository.delete_on_id(id)
 
-    build_response(200, "Categoria deletada com sucesso.")
-
-xisde = CategoryService(data_dict)
-
-print(xisde.list_categories())
+    if response:
+      return build_response(200, "Categoria deletada com sucesso.")
+    else:
+      return build_response(500, "Houve um erro ao deletar a categoria.")
