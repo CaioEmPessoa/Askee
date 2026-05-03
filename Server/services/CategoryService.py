@@ -1,27 +1,23 @@
 from utils.response import build_response
 
-
 class CategoryService:
   def __init__(self, category_repository):
     self.repository = category_repository
 
-  def add_category(self, data):
+  def validate_category(self, data):
     # Nome
     name = data.get("name")
 
     if not name or name.strip() == '':
-       return build_response(400, "É necessário informar um nome para a categoria.")
+      return build_response(400, "É necessário informar um nome para a categoria.")
+
+    if len(name) > 20:
+      return build_response(400, "O nome da categoria pode ter no maximo 20 caracteres.")
 
     existing_category = None # Lógica de busca
 
     if existing_category:
       return build_response(400, "Já existe uma categoria com o nome informado.")
-
-    if len(name) > 20:
-      return build_response(400, "O nome da categoria pode ter no maximo 20 caracteres.")
-
-    # Pode conter caracteres não alfabéticos? sim&nao! talvez? >.<
-    # Nome pode conter mais de uma palavra? nao vejo por que nao  poderia t er  es pa  co
 
     # Descrição
     description = data.get("description")
@@ -29,36 +25,42 @@ class CategoryService:
     if not description or description.strip() == '':
       return build_response(400, "É necessário informar uma descrição para a categoria.")
 
-    # Remover?
     if len(description) > 500:
-      return build_response(400, "A descrição deve conter pelo menos 10 caracteres.")
+      return build_response(400, "A descrição da categoria pode conter no máximo 500 caracteres.")
 
     # Ícone
     icon = data.get("icon")
 
     if not icon or icon.strip() == '':
-       return build_response(400, "É necessário informar um ícone para a categoria.")
+      return build_response(400, "É necessário informar um ícone para a categoria.")
 
     if len(icon) != 3:
-       return build_response(400, "O ícone deve ter exatamente 3 caracteres.")
+      return build_response(400, "O ícone deve ter exatamente 3 caracteres.")
 
-    # Ver lógica dos moderadores
+    return None
+
+  def add_category(self, data):
+    validation = self.validate_category(data)
+
+    if validation:
+      return validation
 
     new_category = {
-       "name": name.strip(),
-       "description": description.strip(),
-       "icon": icon.strip(),
-       "moderators": []
+      "name": data.get("name").strip(),
+      "description": data.get("description").strip(),
+      "icon": data.get("icon").strip(),
+      "moderators": []
     }
 
     response = self.repository.new_entry(new_category)
+
     if response:
       return build_response(200, "Categoria criada com sucesso.", response)
     else:
       return build_response(500, "Houve um erro ao criar a categoria.")
 
   def list_categories(self):
-    response = self.repository.get_all(id)
+    categories = self.repository.get_all(id)
 
     if len(categories) == 0:
       return build_response(200, "Nenhuma categoria encontrada.")
@@ -74,10 +76,13 @@ class CategoryService:
       return build_response(200, "Nenhuma categoria encontrada.")
 
   def update_category(self, id, data):
+    validation = self.validate_category(data)
+
+    if validation:
+      return validation
+
     category = self.repository.get_by_id(id)
     response = False
-
-    # Validar novos dados
 
     response = self.repository.update_on_id(id)
 
