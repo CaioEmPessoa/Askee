@@ -82,9 +82,12 @@ class CategoryService:
       return validation
 
     category = self.repository.get_by_id(id)
+
+    updated_category = category | data
+
     response = False
 
-    response = self.repository.update_on_id(id)
+    response = self.repository.update_on_id(id, updated_category)
 
     if response:
       return build_response(200, "Categoria atualizada com sucesso.", response)
