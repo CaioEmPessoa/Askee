@@ -85,11 +85,11 @@ class AuthService:
             token = generate_token(response["id"])
             if not token:
                 return build_response(500, "AUTH_JWT_SECRET não está configurado.")
-            
+
             # Omitir a senha na resposta e incluir o token
             user_data = {k: v for k, v in response.items() if k != 'password'}
             user_data["token"] = token
-            
+
             return build_response(201, "Usuário criado com sucesso.", user_data)
         else:
             return build_response(500, "Houve um erro ao criar o usuário.")
@@ -121,7 +121,7 @@ class AuthService:
 
         user_data = {k: v for k, v in user.items() if k != 'password'}
         user_data["token"] = token
-        
+
         return build_response(200, "Login realizado com sucesso.", user_data)
 
 auth_service = AuthService(user_repository)

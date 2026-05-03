@@ -5,6 +5,22 @@ class CategoryService:
   def __init__(self, category_repository):
     self.repository = category_repository
 
+  def get_category(self, id):
+    response = self.repository.get_by_id(id)
+
+    if response:
+      return build_response(200, "Categoria encontrada!", response)
+    else:
+      return build_response(200, "Nenhuma categoria encontrada.")
+
+  def list_categories(self):
+    response = self.repository.get_all(id)
+
+    if len(categories) == 0:
+      return build_response(200, "Nenhuma categoria encontrada.")
+    else:
+      return build_response(200, "Categorias encontradas com sucesso.", categories)
+
   def add_category(self, data):
     # Nome
     name = data.get("name")
@@ -57,22 +73,6 @@ class CategoryService:
     else:
       return build_response(500, "Houve um erro ao criar a categoria.")
 
-  def list_categories(self):
-    response = self.repository.get_all(id)
-
-    if len(categories) == 0:
-      return build_response(200, "Nenhuma categoria encontrada.")
-    else:
-      return build_response(200, "Categorias encontradas com sucesso.", categories)
-
-  def get_category(self, id):
-    response = self.repository.get_by_id(id)
-
-    if response:
-      return build_response(200, "Categoria encontrada!", response)
-    else:
-      return build_response(200, "Nenhuma categoria encontrada.")
-
   def update_category(self, id, data):
     category = self.repository.get_by_id(id)
     response = False
@@ -85,7 +85,6 @@ class CategoryService:
       return build_response(200, "Categoria atualizada com sucesso.", response)
     else:
       return build_response(500, "Houve um erro ao atualizar a categoria.")
-
 
   def delete_category(self, id):
     category = self.repository.get_by_id(id)
