@@ -1,4 +1,5 @@
 from flask import Blueprint
+
 comment_bp = Blueprint('comment', __name__)
 
 @comment_bp.route('/comments', methods=['POST'])

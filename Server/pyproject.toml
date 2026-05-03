@@ -1,0 +1,13 @@
+[project]
+name = "askee-server"
+version = "0.1.0"
+description = "Servidor do fórum Askee."
+requires-python = ">=3.13"
+dependencies = [
+    "Flask",
+    "python-dotenv",
+    "argon2-cffi",
+    "PyJWT",
+    "flask-openapi3[scalar]>=4.3.1",
+    "pydantic>=2.13.3",
+]

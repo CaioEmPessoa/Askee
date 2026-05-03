@@ -5,7 +5,7 @@ from os import getcwd
 class RegisterBase():
     def __init__(self, db_register_name):
         self.__register_name = db_register_name
-        self.__register_location = f"{getcwd()}/Database/{self.__register_name}.json"
+        self.__register_location = f"{getcwd()}/../Database/{self.__register_name}.json"
 
         self.cache = None
         self.__build_cache()
