@@ -3,7 +3,7 @@ from flask import jsonify, g, request
 from models.user_schemas import UserCreate, UserUpdate, UserResponse
 from models.auth_schemas import APIResponse
 from middlewares.AuthMiddleware import require_auth
-from registers.User import user_repository
+from repositories.User import user_repository
 
 user_api = APIBlueprint('user', __name__, url_prefix='/users',
     abp_tags=[Tag(name='User', description='Endpoints de usuários')])

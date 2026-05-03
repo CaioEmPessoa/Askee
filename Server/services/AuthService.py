@@ -1,32 +1,11 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from registers.User import user_repository
+from repositories.User import user_repository
+from utils.response import build_response
+from utils.auth import generate_token
 import re
-import jwt
-import os
-import datetime
 
 ph = PasswordHasher()
-
-def build_response(status, message, data={}):
-    return {
-        "status": status,
-        "message": message,
-        "data": data
-    }
-
-# Gerar um token JWT para o usuário autenticado que expira em 24h.
-# TODO(Davi): alinhar pra ver se vou precisar incluir permissões aqui ou informações extras.
-# Se não for precisar, é só usar o GET /users/@me
-def generate_token(user_id):
-    secret = os.getenv("AUTH_JWT_SECRET")
-    if not secret:
-        return None
-    payload = {
-        "user_id": user_id,
-        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
-    }
-    return jwt.encode(payload, secret, algorithm="HS256")
 
 # Serviço para o domínio de autenticação
 class AuthService:

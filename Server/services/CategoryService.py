@@ -1,14 +1,5 @@
-import json
-import uuid
+from utils.response import build_response
 
-
-# Temporário
-def build_response(status, message, data = {}):
-  return {
-     "status": status,
-     "message": message,
-     "data": data
-  }
 
 class CategoryService:
   def __init__(self, category_repository):

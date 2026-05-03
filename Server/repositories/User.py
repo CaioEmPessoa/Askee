@@ -1,4 +1,4 @@
-from registers.RegisterBase import RegisterBase
+from repositories.RegisterBase import RegisterBase
 
 # Repositório para o domínio de usuários, aqui vai ter metodos uteis check_permissions, etc.
 class UserRepository(RegisterBase):
