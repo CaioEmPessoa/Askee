@@ -1,6 +1,6 @@
-from .RegisterBase import RegisterBase
+from .RepositoryBase import RepositoryBase
 
-class Comment(RegisterBase):
+class Comment(RepositoryBase):
     def __init__(self):
         super().__init__("Comments")
 

@@ -1,11 +1,11 @@
 import time
-from .RegisterBase import RegisterBase
+from .RepositoryBase import RepositoryBase
 
-class Post(RegisterBase):
+class Post(RepositoryBase):
     def __init__(self):
         super().__init__("Posts")
 
     def new_entry(self, info):
         info['data'] =  time.strftime("%Y-%m-%d %H:%M", time.gmtime())
 
-        return self.__append_info(info)
+        return super().new_entry(info)
