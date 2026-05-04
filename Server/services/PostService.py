@@ -7,7 +7,6 @@ class PostService:
   def new_post(self, data):
     new_post = {
       "title": data.get("title").strip(),
-      "date": data.get("date").strip(), # tirar?
       "content": data.get("content").strip(),
       "user_id": data.get("user_id").strip(),
       "category_id": data.get("category_id").strip(),
@@ -27,13 +26,13 @@ class PostService:
     if len(posts) == 0:
       return build_response(200, "Nenhuma postagem encontrada.")
     else:
-      return build_response(200, "Postagens encontrados com sucesso.", posts)
+      return build_response(200, "Postagens encontradas com sucesso.", posts)
 
   def list_post(self, id):
     post = self.repository.get_by_id(id)
 
     if post:
-      return build_response(200, "Postagem encontrada!", post)
+      return build_response(200, "Postagem encontrada com sucesso.", post)
     else:
       return build_response(200, "Nenhuma postagem encontrada.")
 
@@ -48,4 +47,4 @@ class PostService:
     if response:
       return build_response(200, "Postagem deletada com sucesso.")
     else:
-      return build_response(500, "Houve um erro ao deletar o postagem.")
+      return build_response(500, "Houve um erro ao deletar a postagem.")
