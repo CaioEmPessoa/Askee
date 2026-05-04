@@ -17,7 +17,6 @@ class CommentService:
     else:
       return build_response(500, "Houve um erro ao criar o comentário.")
 
-
   def list_comments(self):
     comments = self.repository.get_all()
 
@@ -32,7 +31,7 @@ class CommentService:
     if comment:
       return build_response(200, "Comentário encontrado com sucesso.", comment)
     else:
-      return build_response(200, "Nenhuma comentário encontrado.")
+      return build_response(200, "Nenhum comentário encontrado.")
 
   def delete_comment(self, id):
     comment = self.repository.get_by_id(id)

@@ -4,39 +4,22 @@ class CategoryService:
   def __init__(self, category_repository):
     self.repository = category_repository
 
-  def get_category(self, id):
-    response = self.repository.get_by_id(id)
-
-    if response:
-      return response_api.build(200, "Categoria encontrada!", response)
-    else:
-      return response_api.build(200, "Nenhuma categoria encontrada.")
-
-  def list_categories(self):
-    response = self.repository.get_all(id)
-
-    if len(categories) == 0:
-      return response_api.build(200, "Nenhuma categoria encontrada.")
-    else:
-      return response_api.build(200, "Categorias encontradas com sucesso.", categories)
-
-  def add_category(self, data):
+  def validate_category(self, data):
     # Nome
     name = data.get("name")
 
     if not name or name.strip() == '':
-       return response_api.build(400, "É necessário informar um nome para a categoria.")
+      return response_api.build(400, "É necessário informar um nome para a categoria.")
 
-    existing_category = None # Lógica de busca
+    all_categories = self.list_categories()
+
+    existing_category = next((category for category in all_categories if category["name"] == name), None)
 
     if existing_category:
       return response_api.build(400, "Já existe uma categoria com o nome informado.")
 
     if len(name) > 20:
-      return response_api.build(400, "O nome da categoria pode ter no maximo 20 caracteres.")
-
-    # Pode conter caracteres não alfabéticos? sim&nao! talvez? >.<
-    # Nome pode conter mais de uma palavra? nao vejo por que nao  poderia t er  es pa  co
+      return response_api.build(400, "O nome da categoria pode ter no máximo 20 caracteres.")
 
     # Descrição
     description = data.get("description")
@@ -51,10 +34,10 @@ class CategoryService:
     icon = data.get("icon")
 
     if not icon or icon.strip() == '':
-       return response_api.build(400, "É necessário informar um ícone para a categoria.")
+      return response_api.build(400, "É necessário informar um ícone para a categoria.")
 
-    if len(icon) != 3:
-       return response_api.build(400, "O ícone deve ter exatamente 3 caracteres.")
+    if len(icon) > 3:
+      return response_api.build(400, "O ícone pode ter até 3 caracteres.")
 
     return None
 
@@ -78,6 +61,22 @@ class CategoryService:
     else:
       return response_api.build(500, "Houve um erro ao criar a categoria.")
 
+  def get_category(self, id):
+    category = self.repository.get_by_id(id)
+
+    if category:
+      return response_api.build(200, "Categoria encontrada!", category)
+    else:
+      return response_api.build(200, "Nenhuma categoria encontrada.")
+
+  def list_categories(self):
+    categories = self.repository.get_all(id)
+
+    if len(categories) == 0:
+      return response_api.build(200, "Nenhuma categoria encontrada.")
+    else:
+      return response_api.build(200, "Categorias encontradas com sucesso.", categories)
+
   def update_category(self, id, data):
     validation = self.validate_category(data)
 
@@ -88,8 +87,6 @@ class CategoryService:
 
     updated_category = category | data
 
-    response = False
-
     response = self.repository.update_on_id(id, updated_category)
 
     if response:
@@ -99,7 +96,6 @@ class CategoryService:
 
   def delete_category(self, id):
     category = self.repository.get_by_id(id)
-    response = False
 
     if not category:
       return response_api.build(400, "Categoria não encontrada.")
@@ -109,4 +105,4 @@ class CategoryService:
     if response:
       return response_api.build(200, "Categoria deletada com sucesso.")
     else:
-      return Response(500, "Houve um erro ao deletar a categoria.")
+      return response_api.build(500, "Houve um erro ao deletar a categoria.")
