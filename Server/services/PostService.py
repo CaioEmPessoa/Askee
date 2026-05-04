@@ -4,61 +4,48 @@ class PostService:
   def __init__(self, post_repository):
     self.repository = post_repository
 
-  def validate_post(self, data):
-    [
-      {
-        "id": "Exemplo",
-        "title": "Exemplo",
-        "date": "Exemplo",
-        "content": "Exemplo",
-        "user_id": "Exemplo",
-        "category_id": "Exemplo",
-        "comments": [
-          {
-            "user_id": "Exemplo",
-            "content": "Exemplo"
-          }
-        ]
-      }
-    ]
-
-    # Título
-    title = data.get("title")
-
-    if not title or title.strip() == "":
-      return build_response(400, "É necessário informar um título para a postagem.")
-
-    if len(title) > 50:
-      return build_response(400, "O título da postagem pode ter no maximo 50 caracteres.")
-
-    # data?
-
-    content = data.get("content")
-
-    if not content or content.strip() == "":
-      return build_response(400, "É necessário informar o corpo da postagem.")
-
-    if len(content) > 1000:
-      return build_response(400, "O corpo da postagem pode ter no maximo 1000 caracteres.")
-
-
-  def add_post(self, data):
-    validation = self.validate_post(data)
-
-    if validation:
-      return validation
-
+  def new_post(self, data):
     new_post = {
-      "title": "Exemplo",
-      "date": "Exemplo",
-      "content": "Exemplo",
-      "user_id": "Exemplo",
-      "category_id": "Exemplo",
-      "comments": [
-        {
-          "user_id": "Exemplo",
-          "content": "Exemplo"
-        }
-      ]
+      "title": data.get("title").strip(),
+      "date": data.get("date").strip(), # tirar?
+      "content": data.get("content").strip(),
+      "user_id": data.get("user_id").strip(),
+      "category_id": data.get("category_id").strip(),
+      "comments": []
     }
 
+    response = self.repository.new_entry(new_post)
+
+    if response:
+      return build_response(200, "Postagem registrada com sucesso.", response)
+    else:
+      return build_response(500, "Houve um erro ao criar a postagem.")
+
+  def list_posts(self):
+    posts = self.repository.get_all()
+
+    if len(posts) == 0:
+      return build_response(200, "Nenhuma postagem encontrada.")
+    else:
+      return build_response(200, "Postagens encontrados com sucesso.", posts)
+
+  def list_post(self, id):
+    post = self.repository.get_by_id(id)
+
+    if post:
+      return build_response(200, "Postagem encontrada!", post)
+    else:
+      return build_response(200, "Nenhuma postagem encontrada.")
+
+  def delete_post(self, id):
+    post = self.repository.get_by_id(id)
+
+    if not post:
+      return build_response(400, "Postagem não encontrada.")
+
+    response = self.repository.delete_on_id(id)
+
+    if response:
+      return build_response(200, "Postagem deletada com sucesso.")
+    else:
+      return build_response(500, "Houve um erro ao deletar o postagem.")
