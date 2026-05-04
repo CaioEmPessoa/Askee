@@ -1,7 +1,7 @@
-from repositories.RegisterBase import RegisterBase
+from repositories.RepositoryBase import RepositoryBase
 
 # Repositório para o domínio de usuários, aqui vai ter metodos uteis check_permissions, etc.
-class UserRepository(RegisterBase):
+class UserRepository(RepositoryBase):
     def __init__(self):
         super().__init__("Users")
 
