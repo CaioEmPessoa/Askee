@@ -7,7 +7,7 @@ postRepository = Post()
 post_service = PostService(postRepository)
 post_bp = Blueprint('post', __name__)
 
-@post_bp.route('/post', methods=['POST'])
+@post_bp.route('/posts', methods=['POST'])
 def new_post():
     data = request.json
     data["user_id"] = g.user_id
@@ -15,18 +15,18 @@ def new_post():
     post = post_service.new_post(data)
     return jsonify(post), post["status"]
 
-@post_bp.route('/post', methods=['GET'])
+@post_bp.route('/posts', methods=['GET'])
 def list_posts():
     post = post_service.list_posts()
     #Os status HTTP estão vindo direto do service
     return jsonify(post), post["status"]
 
-@post_bp.route('/post/<id>', methods=['GET'])
+@post_bp.route('/posts/<id>', methods=['GET'])
 def list_post(id):
     post = post_service.list_post(id)
     return jsonify(post), post["status"]
 
-@post_bp.route('/post/<id>', methods=['DELETE'])
+@post_bp.route('/posts/<id>', methods=['DELETE'])
 def delete_post(id):
     post = post_service.delete_post(id)
     return jsonify(post), post["status"]
