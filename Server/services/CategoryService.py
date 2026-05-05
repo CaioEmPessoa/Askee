@@ -77,6 +77,14 @@ class CategoryService:
     else:
       return response_api.build(200, "Categorias encontradas com sucesso.", categories)
 
+  def list_category(self, id):
+    category = self.repository.get_by_id(id)
+
+    if category:
+      return response_api.build(200, "Categoria encontrado com sucesso.", category)
+    else:
+      return response_api.build(200, "Nenhuma categoria encontrado.")
+
   def update_category(self, id, data):
     validation = self.validate_category(data)
 
