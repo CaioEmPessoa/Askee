@@ -5,7 +5,7 @@ from os import getcwd
 class RepositoryBase():
     def __init__(self, db_register_name):
         self._register_name = db_register_name
-        self._register_location = f"{getcwd()}/../Database/{self._register_name}.json"
+        self._register_location = f"{getcwd()}/Database/{self._register_name}.json"
 
         self.cache = None
         self._build_cache()
