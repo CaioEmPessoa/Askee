@@ -10,7 +10,6 @@ post_bp = Blueprint('post', __name__)
 @post_bp.route('/posts', methods=['POST'])
 def new_post():
     data = request.json
-    data["user_id"] = g.user_id
 
     post = post_service.new_post(data)
     return jsonify(post), post["status"]

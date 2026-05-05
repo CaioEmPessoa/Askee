@@ -8,9 +8,12 @@ class CommentService:
   def validate_comment(self, data):
       # Validação do Usuário
     user_id = data.get("user_id")
+    post_id = data.get("post_id")
 
     if not user_id or str(user_id).strip() == '':
       return response_api.build(400, "O comentario precisa de um autor.")
+    if not user_id or str(post_id).strip() == '':
+      return response_api.build(400, "O comentario precisa de um post.")
 
       # Validação do Conteúdo
     content = data.get("content")
@@ -26,6 +29,7 @@ class CommentService:
   def new_comment(self, data):
     new_comment = {
       "user_id": data.get("user_id").strip(),
+      "post_id": data.get("post_id").strip(),
       "content": data.get("content").strip()
     }
 
