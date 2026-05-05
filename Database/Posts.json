@@ -1,16 +1,43 @@
 [
-  {
-    "id": "Exemplo",
-    "title": "Exemplo",
-    "date": "Exemplo",
-    "content": "Exemplo",
-    "user_id": "Exemplo",
-    "category_id": "Exemplo",
-    "comments": [
-      {
+    {
+        "id": "Exemplo",
+        "title": "Exemplo",
+        "date": "Exemplo",
+        "content": "Exemplo",
         "user_id": "Exemplo",
-        "content": "Exemplo"
-      }
-    ]
-  }
+        "category_id": "Exemplo",
+        "comments": [
+            {
+                "user_id": "Exemplo",
+                "content": "Exemplo"
+            }
+        ]
+    },
+    {
+        "title": "Nome da Categoria",
+        "content": "Descri\u00e7\u00e3o Categoria",
+        "user_id": "!!!",
+        "category_id": "!!!",
+        "comments": [],
+        "data": "2026-05-05 22:54",
+        "id": "0b2f2d0fba304fd5b80db404155186a8"
+    },
+    {
+        "title": "Nome da Categoria",
+        "content": "Descri\u00e7\u00e3o Categoria",
+        "user_id": "!!!",
+        "category_id": "",
+        "comments": [],
+        "data": "2026-05-05 23:03",
+        "id": "e1b19924c67846cdb11f7164505cad57"
+    },
+    {
+        "title": "Nome da Categoria",
+        "content": "Descri\u00e7\u00e3o Categoria",
+        "user_id": "",
+        "category_id": "",
+        "comments": [],
+        "data": "2026-05-05 23:03",
+        "id": "897cf2b6508f4b0f91ac93124ce7869c"
+    }
 ]

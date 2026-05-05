@@ -11,8 +11,8 @@ class CategoryService:
     if not name or name.strip() == '':
       return response_api.build(400, "É necessário informar um nome para a categoria.")
 
-    all_categories = self.list_categories()
-
+    all_categories = self.list_categories().get("data")
+    print(all_categories)
     existing_category = next((category for category in all_categories if 'name' in category and category["name"] == name), None)
 
     if existing_category:
@@ -27,7 +27,7 @@ class CategoryService:
     if not description or description.strip() == '':
       return response_api.build(400, "É necessário informar uma descrição para a categoria.")
 
-    if len(description) > 500:
+    if len(description) < 10:
       return response_api.build(400, "A descrição deve conter pelo menos 10 caracteres.")
 
     # Ícone
