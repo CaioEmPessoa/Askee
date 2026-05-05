@@ -24,7 +24,7 @@ def list_category(id):
     category = category_service.list_category(id)
     return jsonify(category), category["status"]
 
-@category_bp.route('/categories/<id>', methods=['PUT'])
+@category_bp.route('/categories/<id>', methods=['PATCH'])
 def update_category(id):
     data = request.json
     category = category_service.update_category(id, data)
