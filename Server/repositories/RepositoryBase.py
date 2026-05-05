@@ -83,7 +83,7 @@ class RepositoryBase():
 
     ## ===== QUERY FUNCTIONS =====
     def get_all(self):
-        return self.cache
+        return list(self.cache.values())
 
     def get_by_id(self, id):
         return self.cache[id] if id in self.cache else None
