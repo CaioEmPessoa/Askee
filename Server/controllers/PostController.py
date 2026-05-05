@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify, g
 from services.PostService import PostService
 from middlewares.AuthMiddleware import require_auth
-from repositories.Post import post_repository
-#instaciar o repository
-post_service = PostService(post_repository)
+from repositories.Post import Post
+
+postRepository = Post()
+post_service = PostService(postRepository)
 post_bp = Blueprint('post', __name__)
 
 @post_bp.route('/post', methods=['POST'])
