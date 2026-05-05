@@ -70,7 +70,7 @@ class CategoryService:
       return response_api.build(200, "Nenhuma categoria encontrada.")
 
   def list_categories(self):
-    categories = self.repository.get_all(id)
+    categories = self.repository.get_all()
 
     if len(categories) == 0:
       return response_api.build(200, "Nenhuma categoria encontrada.")
