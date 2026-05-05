@@ -13,7 +13,7 @@ class CategoryService:
 
     all_categories = self.list_categories()
 
-    existing_category = next((category for category in all_categories if category["name"] == name), None)
+    existing_category = next((category for category in all_categories if 'name' in category and category["name"] == name), None)
 
     if existing_category:
       return response_api.build(400, "Já existe uma categoria com o nome informado.")
@@ -86,7 +86,8 @@ class CategoryService:
       return response_api.build(200, "Nenhuma categoria encontrado.")
 
   def update_category(self, id, data):
-    validation = self.validate_category(data)
+    validation = self.validate_category(data) # TODO: edit to comport old + new (with update)
+                                              # Sugestion: search_by_id | data
 
     if validation:
       return validation
