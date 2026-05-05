@@ -9,7 +9,6 @@ comment_bp = Blueprint('comment', __name__)
 @comment_bp.route('/comments', methods=['POST'])
 def new_comments():
     data = request.json
-    data["user_id"] = g.user_id
 
     comment = comment_service.new_comment(data)
     return jsonify(comment), comment["status"]
