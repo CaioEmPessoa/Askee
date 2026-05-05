@@ -4,6 +4,25 @@ class CommentService:
   def __init__(self, comment_repository):
     self.repository = comment_repository
 
+
+  def validate_comment(self, data):
+      # Validação do Usuário
+    user_id = data.get("user_id")
+
+    if not user_id or str(user_id).strip() == '':
+      return build_response(400, "O comentario precisa de um autor.")
+
+      # Validação do Conteúdo
+    content = data.get("content")
+
+    if not content or str(content).strip() == '':
+      return build_response(400, "O comentário não pode estar vazio.")
+        
+    if len(str(content)) > 1000: 
+      return build_response(400, "O comentário pode ter no máximo 1000 caracteres.")
+
+    return None
+
   def new_comment(self, data):
     new_comment = {
       "user_id": data.get("user_id").strip(),

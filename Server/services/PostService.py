@@ -4,6 +4,39 @@ class PostService:
   def __init__(self, post_repository):
     self.repository = post_repository
 
+  def validate_post(self, data):
+    #title
+    title = data.get("title")
+
+    if not title or str(title).strip() == '':
+      return build_response(400, "É necessário informar um título para a postagem.")
+    
+    if len(title) > 100:
+      return build_response(400, "O título da postagem pode ter no máximo 100 caracteres.")
+
+    # Conteúdo
+    content = data.get("content")
+
+    if not content or str(content).strip() == '':
+      return build_response(400, "É necessário informar o conteúdo da postagem.")
+    
+    if len(content) < 30:
+      return build_response(400, "O conteúdo deve conter pelo menos 30 caracteres.")
+
+    # User ID
+    user_id = data.get("user_id")
+
+    if not user_id or str(user_id).strip() == '':
+      return build_response(400, "O post precisa de um autor")
+
+    # Category ID
+    category_id = data.get("category_id")
+    
+    if not category_id or str(category_id).strip() == '':
+      return build_response(400, "É necessário informar a categoria da postagem")
+
+    return None
+
   def new_post(self, data):
     new_post = {
       "title": data.get("title").strip(),
