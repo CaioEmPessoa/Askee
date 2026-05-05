@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "name": "Askee",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.0006303787231445312,
+  "filesCount": 4,
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "http://localhost:5000/"
+  }
+}

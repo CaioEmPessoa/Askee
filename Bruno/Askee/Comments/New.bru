@@ -1,0 +1,25 @@
+meta {
+  name: New
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/comments
+  body: json
+  auth: inherit
+}
+
+body:json {
+    {
+      "name": "Nome da Categoria",
+      "description": "Descrição Categoria",
+      "icon": "!!!",
+      "user_id": "asd"
+    }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
