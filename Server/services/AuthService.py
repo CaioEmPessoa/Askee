@@ -1,11 +1,7 @@
-from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
 from repositories.User import user_repository
-from utils.response import build_response
+from utils.response import build
 from utils.auth import generate_token
 import re
-
-ph = PasswordHasher()
 
 # Serviço para o domínio de autenticação
 class AuthService:
@@ -64,14 +60,11 @@ class AuthService:
         if self.repository.get_by_username(normalized_username):
             return build_response(400, "Já existe um usuário com este username.")
 
-        # Hashear a senha com argon2id
-        hashed_password = ph.hash(password)
-
         # Payload final do usuário - tanto que vamos salvar no banco e enviar como resposta no controller (omitindo a senha)
         new_user = {
             "username": normalized_username,
             "email": normalized_email,
-            "password": hashed_password,
+            "password": password,
             "name": name.strip(),
             "icon": icon.strip() if isinstance(icon, str) else None,
             "about": about.strip() if isinstance(about, str) else None,
@@ -100,19 +93,14 @@ class AuthService:
         password = data.get("password")
 
         if not email or not password:
-            return build_response(400, "Email e password são obrigatórios.")
+            return build_response(400, "Email e senha são obrigatórios.")
 
         user = self.repository.get_by_email(email.strip().lower())
         if not user:
-            return build_response(401, "Email ou password inválidos.")
+            return build_response(401, "Email ou senha inválidos.")
 
-        try:
-            # Verificar a senha que criptografamos com argon2id
-            ph.verify(user.get("password"), password)
-            if ph.check_needs_rehash(user.get("password")):
-                pass
-        except VerifyMismatchError:
-            return build_response(401, "Email ou password inválidos.")
+        if user.get("password") != password:
+            return build_response(401, "Email ou senha inválidos.")
 
         # Criar token JWT para autenticação em rotas protegidas
         token = generate_token(user["id"])
