@@ -1,0 +1,23 @@
+meta {
+  name: Sign In
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:5000/auth/sign-in
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "email@mail.com",
+    "password": "1234567"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

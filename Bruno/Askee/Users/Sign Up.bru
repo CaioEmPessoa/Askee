@@ -1,0 +1,29 @@
+meta {
+  name: Sign Up
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/auth/sign-up
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "caio" ,
+    "email": "email@mail.com",
+    "password": "1234567",
+    "name": "caio",
+    "icon": null,
+    "about": null,
+    "is_super": false,
+    "is_moderator": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

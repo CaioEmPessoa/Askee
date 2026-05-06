@@ -9,6 +9,7 @@ category_service = CategoryService(categoryRepository)
 category_bp = Blueprint('category', __name__)
 
 @category_bp.route('/categories', methods=['POST'])
+@require_auth
 def add_category():
     data = request.json
     category = category_service.add_category(data)

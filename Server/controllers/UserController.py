@@ -20,8 +20,8 @@ def new_user(body: UserCreate):
 @user_api.get('')
 def list_users():
     users = user_repository.get_all()
-    users_list = [{k: v for k, v in u.items() if k != "password"} for u in users.values()]
-    return jsonify({"status": 200, "message": "OK", "data": users_list}), 200
+    # users_list = [{k: v for k, v in u.items() if k != "password"} for u in users]
+    return jsonify({"status": 200, "message": "OK", "data": users}), 200
 
 @user_api.get('/<id>')
 def list_user(id: str):
