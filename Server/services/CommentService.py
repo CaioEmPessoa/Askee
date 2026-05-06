@@ -5,16 +5,16 @@ class CommentService:
     self.repository = comment_repository
 
   def validate_comment(self, data):
-    # Validação do Usuário
+    # Validação do usuário
     user_id = data.get("user_id")
     post_id = data.get("post_id")
 
     if not user_id or str(user_id).strip() == '':
-      return response_api.build(400, "O comentario precisa de um autor.")
+      return response_api.build(400, "O comentário precisa de um autor.")
     if not post_id or str(post_id).strip() == '':
-      return response_api.build(400, "O comentario precisa de um post.")
+      return response_api.build(400, "O comentário precisa de um post.")
 
-    # Validação do Conteúdo
+    # Validação do conteúdo
     content = data.get("content")
 
     if not content or str(content).strip() == '':
@@ -32,9 +32,9 @@ class CommentService:
       return validation
 
     new_comment = {
-      "user_id": data.get("user_id").strip(),
-      "post_id": data.get("post_id").strip(),
-      "content": data.get("content").strip()
+      "user_id": str(data.get("user_id")).strip(),
+      "post_id": str(data.get("post_id")).strip(),
+      "content": str(data.get("content")).strip()
     }
 
     response = self.repository.new_entry(new_comment)
@@ -47,7 +47,7 @@ class CommentService:
   def list_comments(self):
     response = self.repository.get_all()
 
-    if not response:
+    if response is None:
       return response_api.build(500, "Houve um erro ao retornar os comentários.")
     if len(response) == 0:
       return response_api.build(200, "Nenhum comentário encontrado.")
@@ -58,7 +58,7 @@ class CommentService:
     response = self.repository.get_by_id(id)
 
     if response:
-      return response_api.build(200, "Comentário encontrado com sucesso.", comment)
+      return response_api.build(200, "Comentário encontrado com sucesso.", response)
     else:
       return response_api.build(200, "Nenhum comentário encontrado.")
 

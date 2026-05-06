@@ -62,26 +62,26 @@ class CategoryService:
       return response_api.build(500, "Houve um erro ao criar a categoria.")
 
   def get_category(self, id):
-    category = self.repository.get_by_id(id)
+    response = self.repository.get_by_id(id)
 
-    if category:
-      return response_api.build(200, "Categoria encontrada!", category)
+    if response:
+      return response_api.build(200, "Categoria encontrada.", response)
     else:
       return response_api.build(200, "Nenhuma categoria encontrada.")
 
   def list_categories(self):
-    categories = self.repository.get_all()
+    response = self.repository.get_all()
 
-    if len(categories) == 0:
+    if len(response) == 0:
       return response_api.build(200, "Nenhuma categoria encontrada.")
     else:
-      return response_api.build(200, "Categorias encontradas com sucesso.", categories)
+      return response_api.build(200, "Categorias encontradas com sucesso.", response)
 
   def list_category(self, id):
-    category = self.repository.get_by_id(id)
+    response = self.repository.get_by_id(id)
 
-    if category:
-      return response_api.build(200, "Categoria encontrado com sucesso.", category)
+    if response:
+      return response_api.build(200, "Categoria encontrado com sucesso.", response)
     else:
       return response_api.build(200, "Nenhuma categoria encontrado.")
 
@@ -93,6 +93,9 @@ class CategoryService:
       return validation
 
     category = self.repository.get_by_id(id)
+
+    if not category:
+      return response_api.build(400, "Categoria não encontrada.")
 
     updated_category = category | data
 

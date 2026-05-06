@@ -5,7 +5,7 @@ class PostService:
     self.repository = post_repository
 
   def validate_post(self, data):
-    #title
+    # Título
     title = data.get("title")
 
     if not title or str(title).strip() == '':
@@ -23,21 +23,26 @@ class PostService:
     if len(content) < 30:
       return response_api.build(400, "O conteúdo deve conter pelo menos 30 caracteres.")
 
-    # User ID
+    # ID do usuário
     user_id = data.get("user_id")
 
     if not user_id or str(user_id).strip() == '':
-      return response_api.build(400, "O post precisa de um autor")
+      return response_api.build(400, "O post precisa de um autor.")
 
-    # Category ID
+    # ID da categoria
     category_id = data.get("category_id")
 
     if not category_id or str(category_id).strip() == '':
-      return response_api.build(400, "É necessário informar a categoria da postagem")
+      return response_api.build(400, "É necessário informar a categoria da postagem.")
 
     return None
 
   def new_post(self, data):
+    validation = self.validate_post(data)
+
+    if validation:
+      return validation
+
     new_post = {
       "title": data.get("title").strip(),
       "content": data.get("content").strip(),
@@ -54,18 +59,18 @@ class PostService:
       return response_api.build(500, "Houve um erro ao criar a postagem.")
 
   def list_posts(self):
-    posts = self.repository.get_all()
+    response = self.repository.get_all()
 
-    if len(posts) == 0:
+    if len(response) == 0:
       return response_api.build(200, "Nenhuma postagem encontrada.")
     else:
-      return response_api.build(200, "Postagens encontradas com sucesso.", posts)
+      return response_api.build(200, "Postagens encontradas com sucesso.", response)
 
   def list_post(self, id):
-    post = self.repository.get_by_id(id)
+    response = self.repository.get_by_id(id)
 
-    if post:
-      return response_api.build(200, "Postagem encontrada com sucesso.", post)
+    if response:
+      return response_api.build(200, "Postagem encontrada com sucesso.", response)
     else:
       return response_api.build(200, "Nenhuma postagem encontrada.")
 
