@@ -5,6 +5,7 @@ from repositories.Post import Post
 
 postRepository = Post()
 post_service = PostService(postRepository)
+
 post_bp = Blueprint('post', __name__)
 
 @post_bp.route('/posts', methods=['POST'])

@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, g, request
-from repositories.Comment import comment_repository
+from repositories.Comment import Comment
 from services.CommentService import CommentService
 from middlewares.AuthMiddleware import require_auth
 
-comment_service = CommentService(comment_repository)
+commentRepository = Comment()
+comment_service = CommentService(commentRepository)
+
 comment_bp = Blueprint('comment', __name__)
 
 @comment_bp.route('/comments', methods=['POST'])
