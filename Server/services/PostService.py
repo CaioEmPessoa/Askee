@@ -85,6 +85,6 @@ class PostService:
     response = self.repository.delete_on_id(id)
 
     if response:
-      return response_api.build(200, "Postagem deletada com sucesso.")
+      return response_api.build(200, "Postagem deletada com sucesso.", post)
     else:
       return response_api.build(500, "Houve um erro ao deletar a postagem.")

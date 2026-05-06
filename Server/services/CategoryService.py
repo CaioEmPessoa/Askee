@@ -115,6 +115,6 @@ class CategoryService:
     response = self.repository.delete_on_id(id)
 
     if response:
-      return response_api.build(200, "Categoria deletada com sucesso.")
+      return response_api.build(200, "Categoria deletada com sucesso.", category)
     else:
       return response_api.build(500, "Houve um erro ao deletar a categoria.")

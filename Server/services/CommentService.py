@@ -71,6 +71,6 @@ class CommentService:
     response = self.repository.delete_on_id(id)
 
     if response:
-      return response_api.build(200, "Comentário deletado com sucesso.")
+      return response_api.build(200, "Comentário deletado com sucesso.", comment)
     else:
       return response_api.build(500, "Houve um erro ao deletar o comentário.")
