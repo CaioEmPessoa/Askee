@@ -61,6 +61,8 @@ class PostService:
   def list_posts(self):
     response = self.repository.get_all()
 
+    if response is None:
+      return response_api.build(500, "Houve um erro ao retornar as postagens.")
     if len(response) == 0:
       return response_api.build(200, "Nenhuma postagem encontrada.")
     else:
