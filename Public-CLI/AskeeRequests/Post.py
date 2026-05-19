@@ -1,4 +1,4 @@
-from AskeeRequestsBase import AskeeRequestsBase
+from .AskeeRequestsBase import AskeeRequestsBase
 
 class PostRequests(AskeeRequestsBase):
     def __init__(self):
