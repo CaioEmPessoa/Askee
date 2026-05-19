@@ -1,53 +1,34 @@
-from getkey import getkey, keys
-from enum import StrEnum
+from getkey import getkey
+from time import sleep
+import termios
 import shutil
 import sys
+import tty
 import os
 
-from style_constants import COLORS, LOGOS
+from cli_configs import CliConfigs
+from constants.style_constants import COLORS, LOGOS
+from constants.controll_constants import MODES, ACTIONS
 import text_generators as t_gen
 
-# user for get char
-if os.name == 'nt': import msvcrt
-else:
-    import tty
-    import termios
-
-class MODES(StrEnum):
-    EDIT = 'e'
-    VIEW = 'v'
-
-class ACTIONS(StrEnum):
-    TOGGLE_VIEW    = "1"
-    CHANGE_LOGO_UP = keys.UP
-    CHANGE_LOGO_DN = keys.DOWN
-    CHANGE_COLOR_L = keys.LEFT
-    CHANGE_COLOR_R = keys.RIGHT
-    BACKSPACE      = keys.BACKSPACE
-
-
 class AskeeCLI:
-
-    def __init__(self):
-        self.terminal_width = shutil.get_terminal_size().columns - 3
-        self.terminal_height = shutil.get_terminal_size().lines - 3
+    def __init__(self, configs):
+        self.configs = configs
 
         # Interaction variables
-        self.mode = MODES.EDIT
-        self.command = None
-        self.user_input = []
-        self.current_screen = "START_MENU" # TODO: Create constant later
+        self.mode = self.configs.mode
+        self.user_input = self.configs.user_input
 
         # Style variables
-        self.current_color = COLORS.GREEN
-        self.current_logo = LOGOS.ASKEE_LOGO_TOILET
+        self.current_color = self.configs.current_color
+        self.current_logo = self.configs.current_logo
 
-        self.text_generator = t_gen.TextGenerator(self.terminal_width, self.terminal_height, self.current_color, self.current_logo)
+        self.text_generator = t_gen.TextGenerator(self.configs)
 
-        self.init_display()
-        self.display()
+        self._clear_display()
+        self.display(self.text_generator.start_screen(), "left-right-char")
 
-    def init_display(self):
+    def reload_display(self):
         self._clear_display()
         self.display(self.text_generator.start_screen())
 
@@ -58,14 +39,23 @@ class AskeeCLI:
         while self.mode == MODES.EDIT:
             current_char = getkey()
             if current_char in [action.value for action in ACTIONS]:
-                print(current_char)
                 self.exec_command(current_char)
             else:
                 self.user_input.append(current_char)
-                self.display_user_input()
+            self.display_user_input()
 
-    def display(self, string):
-        print(string)
+    def display(self, string, display_mode="instant"):
+        match display_mode:
+            case "one-liner":
+                for line in string.split("\n"):
+                    print(line)
+                    sleep(0.1)
+            case "left-right-char":
+                for char in string:
+                    print(char, end='', flush=True)
+                    sleep(0.01)
+            case "instant":
+                print(string)
 
         if self.mode == MODES.EDIT:
             self.display_user_input()
@@ -91,17 +81,18 @@ class AskeeCLI:
                 self.current_logo = self.current_logo.previous()
                 self.text_generator.current_logo = self.current_logo
             case ACTIONS.BACKSPACE:
-                self.user_input.pop()
+                if len(self.user_input) > 0:
+                    self.user_input.pop()
             case _:
                 pass
 
-        self.init_display() # TODO: Remover a necessidade de ter que
+        self.reload_display() # TODO: Remover a necessidade de ter que
                             # reiniciar a tela toda vez so p troca estilo
 
 
 
 if __name__ == "__main__":
     try:
-        app = AskeeCLI()
+        app = AskeeCLI(CliConfigs())
     except KeyboardInterrupt:
         sys.exit(0)
