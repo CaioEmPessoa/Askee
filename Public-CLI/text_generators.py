@@ -16,5 +16,11 @@ class TextGenerator:
         string += self.fill_remaining_space(string)
         return string
 
+    def help_screen(self):
+        string =  self.generic()
+        string += "view posts <category> : Show all posts. Can search by category"
+        string += "view categories       : Show all categories"
+        string += "view users <active>   : Show all users. Can search by active (bool)"
+
     def generic(self, string):
         return self.configs.current_color + string

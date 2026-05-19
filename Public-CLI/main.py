@@ -41,10 +41,10 @@ class AskeeCLI:
         while self.mode == MODES.EDIT:
             current_char = getkey()
             if current_char in [action.value for action in ACTIONS]:
-                self.exec_command(current_char)
+                self.exec_command(current_char) #TODO: need to send action dict value
             #TODO Need to better this check on god but i need to sleep xd lol kk
             elif "".join(self.user_input)+current_char in [command.value for command in COMMANDS]:
-                self.user_input.append(current_char)
+                self.user_input.append(current_char) #TODO: need to send action dict value
                 self.exec_command("".join(self.user_input))
             else:
                 self.user_input.append(current_char)
@@ -59,7 +59,7 @@ class AskeeCLI:
             case "left-right-char":
                 for char in string:
                     print(char, end='', flush=True)
-                    sleep(0.00001)
+                    sleep(0.01)
             case _:
                 print(string)
 
@@ -92,7 +92,6 @@ class AskeeCLI:
                 self.reload_display(display_logo)
 
             case ACTIONS.TOGGLE_VIEW:
-                self.configs.current_screen = "POSTS_VIEW"
                 self.configs.mode = MODES.VIEW if self.configs.mode == MODES.EDIT else MODES.EDIT
 
             case ACTIONS.BACKSPACE:

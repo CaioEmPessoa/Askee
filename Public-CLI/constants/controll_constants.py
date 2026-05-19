@@ -1,6 +1,8 @@
 from getkey import keys
 from enum import StrEnum
 
+from ..PublicService import PublicService
+
 class MODES(StrEnum):
     EDIT = 'e'
     VIEW = 'v'
@@ -15,4 +17,7 @@ class ACTIONS(StrEnum):
 
 class COMMANDS(StrEnum):
     HELP       = "help"
-    LIST_POSTS = "view posts"
+    LIST_POSTS = {
+        "name": "view posts\n",              #TODO: remove \n hardcoded. Place it on validaton later.
+        "action":PublicService().view_posts  #TODO: test this
+    }
