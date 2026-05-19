@@ -6,9 +6,13 @@ class MODES(StrEnum):
     VIEW = 'v'
 
 class ACTIONS(StrEnum):
-    TOGGLE_VIEW    = "1"
+    TOGGLE_VIEW    = keys.F1
     CHANGE_LOGO_UP = keys.UP
     CHANGE_LOGO_DN = keys.DOWN
     CHANGE_COLOR_L = keys.LEFT
     CHANGE_COLOR_R = keys.RIGHT
     BACKSPACE      = keys.BACKSPACE
+
+class COMMANDS(StrEnum):
+    HELP       = "help"
+    LIST_POSTS = "view posts"
