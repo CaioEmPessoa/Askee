@@ -11,6 +11,11 @@ from constants.style_constants import COLORS, LOGOS
 from constants.controll_constants import MODES, ACTIONS, COMMANDS
 import text_generators as t_gen
 
+#TODO WILL PROBABLY MOVE THIS IMPORT ELSEWHERE LATER
+from AskeeRequests.Post import PostRequests
+
+postRequests = PostRequests()
+
 class AskeeCLI:
     def __init__(self, configs):
         self.configs = configs
@@ -96,9 +101,20 @@ class AskeeCLI:
                     self.reload_display(display_logo)
 
 
+            # WILL NEED TO CLEAN THIS UP IN A SEPARATED CLASS AND/OR FUNCTION LATER.
             case COMMANDS.LIST_POSTS:
+                getAllPosts = postRequests.get_all().get("data")
+
+                clean_post_str = ""
+
+                for post in getAllPosts:
+                    clean_post_str += f"Title: {post["title"]}\n"
+                    clean_post_str += f"Content: {post["content"]}\n"
+                    clean_post_str += "\n"
+
                 self._clear_display()
-                self.display("posts")
+                self.display(clean_post_str, "one-liner")
+                self.user_input = [] # clean after sucessfull command run
 
             case _:
                 self.display_user_input()
