@@ -1,17 +1,13 @@
 class TextGenerator:
     def __init__(self, configs):
-        self.terminal_width = configs.terminal_width
-        self.terminal_height = configs.terminal_height
-
-        self.current_color = configs.current_color
-        self.current_logo = configs.current_logo
+        self.configs = configs
 
     def fill_remaining_space(self, string):
-        remaining_space = self.terminal_height - string.count('\n')
+        remaining_space = self.configs.terminal_height - string.count('\n')
         return "".join('\n' for i in range(remaining_space))
 
     def start_screen(self):
-        string = self.generic(self.current_logo) # start string
+        string = self.generic(self.configs.current_logo) # start string
         string += "\n"
         string += " Type 'help' for help.\n"
         string += '   ↑ ↓ Change the logo\n'
@@ -21,4 +17,4 @@ class TextGenerator:
         return string
 
     def generic(self, string):
-        return self.current_color + string
+        return self.configs.current_color + string

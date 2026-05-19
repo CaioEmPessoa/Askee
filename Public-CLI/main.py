@@ -19,18 +19,14 @@ class AskeeCLI:
         self.mode = self.configs.mode
         self.user_input = self.configs.user_input
 
-        # Style variables
-        self.current_color = self.configs.current_color
-        self.current_logo = self.configs.current_logo
-
         self.text_generator = t_gen.TextGenerator(self.configs)
 
         self._clear_display()
         self.display(self.text_generator.start_screen(), "left-right-char")
 
-    def reload_display(self):
+    def reload_display(self, display_logo=""):
         self._clear_display()
-        self.display(self.text_generator.start_screen())
+        self.display(self.text_generator.start_screen(), display_logo)
 
     def _clear_display(self):
         os.system('clear' if os.name == 'posix' else 'cls')
@@ -54,7 +50,7 @@ class AskeeCLI:
                 for char in string:
                     print(char, end='', flush=True)
                     sleep(0.01)
-            case "instant":
+            case _:
                 print(string)
 
         if self.mode == MODES.EDIT:
@@ -67,27 +63,26 @@ class AskeeCLI:
         print("> " + "".join(self.user_input), end="\r\r")
 
     def exec_command(self, command):
+        display_logo = ""
+
         match command:
             case ACTIONS.CHANGE_COLOR_L:
-                self.current_color = self.current_color.next()
-                self.text_generator.current_color = self.current_color # TODO: remover a necessidade de trocar 2x o valor
+                self.configs.current_color = self.configs.current_color.next()
             case ACTIONS.CHANGE_COLOR_R:
-                self.current_color = self.current_color.previous()
-                self.text_generator.current_color = self.current_color
+                self.configs.current_color = self.configs.current_color.previous()
             case ACTIONS.CHANGE_LOGO_UP:
-                self.current_logo = self.current_logo.next()
-                self.text_generator.current_logo = self.current_logo
+                display_logo = "one-liner"
+                self.configs.current_logo = self.configs.current_logo.next()
             case ACTIONS.CHANGE_LOGO_DN:
-                self.current_logo = self.current_logo.previous()
-                self.text_generator.current_logo = self.current_logo
+                display_logo = "one-liner"
+                self.configs.current_logo = self.configs.current_logo.previous()
             case ACTIONS.BACKSPACE:
                 if len(self.user_input) > 0:
                     self.user_input.pop()
             case _:
                 pass
 
-        self.reload_display() # TODO: Remover a necessidade de ter que
-                            # reiniciar a tela toda vez so p troca estilo
+        self.reload_display(display_logo)
 
 
 
