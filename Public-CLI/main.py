@@ -6,9 +6,9 @@ import sys
 import tty
 import os
 
-from cli_configs import CliConfigs
-from constants.style_constants import COLORS, LOGOS
-from constants.controll_constants import MODES, ACTIONS, Commands
+from Interatcion.cli_configs import CliConfigs
+from Interatcion.actions_controll import MODES, ACTIONS, Commands
+from Interatcion.style_constants import COLORS, LOGOS
 from PublicService import PublicService
 import text_generators as t_gen
 

@@ -2,8 +2,8 @@ from shutil import get_terminal_size
 
 from PublicService import PublicService
 
-from constants.style_constants import COLORS, LOGOS
-from constants.controll_constants import MODES, ACTIONS
+from .style_constants import COLORS, LOGOS
+from .actions_controll import MODES, ACTIONS
 
 class CliConfigs():
     def __init__(self):
