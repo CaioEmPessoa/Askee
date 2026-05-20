@@ -44,15 +44,13 @@ class AskeeCLI:
         while self.mode == MODES.EDIT:
             current_char = getkey()
             if current_char in [action.value for action in ACTIONS]:
-                self.exec_command(current_char) #TODO: need to send action dict value
-            
+                self.exec_action(current_char)
+
             self.user_input.append(current_char)
 
-            #TODO Need to better this check on god but i need to sleep xd lol kk
-            if "".join(self.user_input) in [command.value for command in COMMANDS]:
-                self.commands.execute()
-                self.user_input.append(current_char) #TODO: need to send action dict value
+            if "".join(self.user_input) in [command.name for command in self.commands]:
                 self.exec_command("".join(self.user_input))
+
             self.display_user_input()
 
     def display(self, string, display_mode="instant"):
@@ -77,8 +75,11 @@ class AskeeCLI:
     def display_user_input(self):
         print("> " + "".join(self.user_input), end="\r\r")
 
+    def exec_action(self, action):
+        pass
+
     def exec_command(self, command):
-        command.get("action")()
+        self.commands.run(command)
 
 if __name__ == "__main__":
     try:
