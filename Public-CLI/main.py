@@ -7,7 +7,7 @@ import tty
 import os
 
 from Interatcion.cli_configs import CliConfigs
-from Interatcion.actions_controll import MODES, ACTIONS, Commands
+from Interatcion.actions_controll import MODES, Actions, Commands
 from Interatcion.style_constants import COLORS, LOGOS
 from PublicService import PublicService
 import text_generators as t_gen
@@ -28,10 +28,11 @@ class AskeeCLI:
         self.public_service = PublicService(self, self.configs)
         self.text_generator = t_gen.TextGenerator(self.configs)
         self.commands = Commands(self.public_service)
+        self.actions = Actions(self.public_service)
 
         self.configs.current_screen = "START_MENU"
         self._clear_display()
-        self.display(self.text_generator.start_screen(), "left-right-char")
+        self.display(self.text_generator.start_screen(), "instant")
 
     def reload_display(self, display_logo=""):
         self._clear_display()
@@ -43,14 +44,15 @@ class AskeeCLI:
     def handle_input(self):
         while self.mode == MODES.EDIT:
             current_char = getkey()
-            if current_char in [action.value for action in ACTIONS]:
+            if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
+                continue
+
+            elif current_char == "\n" and "".join(self.user_input) in [command.name for command in self.commands]:
+                self.exec_command("".join(self.user_input))
+                continue
 
             self.user_input.append(current_char)
-
-            if "".join(self.user_input) in [command.name for command in self.commands]:
-                self.exec_command("".join(self.user_input))
-
             self.display_user_input()
 
     def display(self, string, display_mode="instant"):
@@ -73,10 +75,11 @@ class AskeeCLI:
             print("(view_mode)", end="\r\r")
 
     def display_user_input(self):
+        print("", end="\r\r")
         print("> " + "".join(self.user_input), end="\r\r")
 
     def exec_action(self, action):
-        pass
+        self.actions.run(action)
 
     def exec_command(self, command):
         self.commands.run(command)

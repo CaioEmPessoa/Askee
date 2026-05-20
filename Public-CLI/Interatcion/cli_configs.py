@@ -3,7 +3,7 @@ from shutil import get_terminal_size
 from PublicService import PublicService
 
 from .style_constants import COLORS, LOGOS
-from .actions_controll import MODES, ACTIONS
+from .actions_controll import MODES
 
 class CliConfigs():
     def __init__(self):

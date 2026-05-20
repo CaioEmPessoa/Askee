@@ -20,14 +20,15 @@ class PublicService:
         self.mainClass.reload_display(display_logo)
 
     def change_app_color(self, direction='right'):
+        display_logo = "instant"
         current_color = self.configClass.current_color
         self.configClass.current_color = current_color.previous() if direction=="left" else current_color.next
         self.mainClass.reload_display(display_logo)
 
     def backspace_action(self):
-        if len(self.mainClass) > 0:
-            self.mainClass.pop()
-            self.mainClass.reload_display(display_logo)
+        if len(self.mainClass.user_input) > 0:
+            self.mainClass.user_input.pop()
+            self.mainClass.reload_display()
 
     # ============ COMMANDS FUNCTIONS ============
     def view_posts(self):
