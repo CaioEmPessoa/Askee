@@ -1,8 +1,12 @@
 
+from AskeeRequests import *
+
 class PublicService:
     def __init__(self, main, config):
         self.mainClass = main
         self.configClass = config
+
+        self.postRequests = Post()
 
     # ============ ACTIONS FUNCTIONS ============
     def toggle_app_view(self):
@@ -26,8 +30,8 @@ class PublicService:
             self.mainClass.reload_display(display_logo)
 
     # ============ COMMANDS FUNCTIONS ============
-    def view_posts():
-        getAllPosts = postRequests.get_all().get("data")
+    def view_posts(self):
+        getAllPosts = self.postRequests.get_all().get("data")
 
         clean_post_str = ""
 
