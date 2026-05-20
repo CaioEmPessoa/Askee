@@ -1,8 +1,6 @@
 from getkey import keys
 from enum import StrEnum
 
-from ..PublicService import PublicService
-
 class MODES(StrEnum):
     EDIT = 'e'
     VIEW = 'v'
@@ -15,9 +13,14 @@ class ACTIONS(StrEnum):
     CHANGE_COLOR_R = keys.RIGHT
     BACKSPACE      = keys.BACKSPACE
 
-class COMMANDS(StrEnum):
-    HELP       = "help"
-    LIST_POSTS = {
-        "name": "view posts\n",              #TODO: remove \n hardcoded. Place it on validaton later.
-        "action":PublicService().view_posts  #TODO: test this
-    }
+class Commands:
+    HELP = ("help", "show_help")
+    VIEW_POSTS = ("view posts", "view_posts")
+    
+    def __init__(self, public_service):
+        self.publicService = public_service
+    
+    def execute(self, command, *args, **kwargs):
+        _, method_name = command
+        action = getattr(self.publicService, method_name)
+        return action(*args, **kwargs)

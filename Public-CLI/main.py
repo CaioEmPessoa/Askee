@@ -8,7 +8,8 @@ import os
 
 from cli_configs import CliConfigs
 from constants.style_constants import COLORS, LOGOS
-from constants.controll_constants import MODES, ACTIONS, COMMANDS
+from constants.controll_constants import MODES, ACTIONS, Commands
+from PublicService import PublicService
 import text_generators as t_gen
 
 #TODO WILL PROBABLY MOVE THIS IMPORT ELSEWHERE LATER
@@ -24,7 +25,9 @@ class AskeeCLI:
         self.mode = self.configs.mode
         self.user_input = self.configs.user_input
 
+        self.public_service = PublicService(self, self.configs)
         self.text_generator = t_gen.TextGenerator(self.configs)
+        self.commands = Commands(self.public_service)
 
         self.configs.current_screen = "START_MENU"
         self._clear_display()
@@ -42,12 +45,14 @@ class AskeeCLI:
             current_char = getkey()
             if current_char in [action.value for action in ACTIONS]:
                 self.exec_command(current_char) #TODO: need to send action dict value
+            
+            self.user_input.append(current_char)
+
             #TODO Need to better this check on god but i need to sleep xd lol kk
-            elif "".join(self.user_input)+current_char in [command.value for command in COMMANDS]:
+            if "".join(self.user_input) in [command.value for command in COMMANDS]:
+                self.commands.execute()
                 self.user_input.append(current_char) #TODO: need to send action dict value
                 self.exec_command("".join(self.user_input))
-            else:
-                self.user_input.append(current_char)
             self.display_user_input()
 
     def display(self, string, display_mode="instant"):
@@ -73,53 +78,7 @@ class AskeeCLI:
         print("> " + "".join(self.user_input), end="\r\r")
 
     def exec_command(self, command):
-        display_logo = ""
-        # CHANGE THIS TO FUNCTIONS IN THE ENUM
-        match command:
-            case ACTIONS.CHANGE_COLOR_L:
-                self.configs.current_color = self.configs.current_color.next()
-                self.reload_display(display_logo)
-            case ACTIONS.CHANGE_COLOR_R:
-                self.configs.current_color = self.configs.current_color.previous()
-                self.reload_display(display_logo)
-            case ACTIONS.CHANGE_LOGO_UP:
-                display_logo = "one-liner"
-                self.configs.current_logo = self.configs.current_logo.next()
-                self.reload_display(display_logo)
-            case ACTIONS.CHANGE_LOGO_DN:
-                display_logo = "one-liner"
-                self.configs.current_logo = self.configs.current_logo.previous()
-                self.reload_display(display_logo)
-
-            case ACTIONS.TOGGLE_VIEW:
-                self.configs.mode = MODES.VIEW if self.configs.mode == MODES.EDIT else MODES.EDIT
-
-            case ACTIONS.BACKSPACE:
-                if len(self.user_input) > 0:
-                    self.user_input.pop()
-                    self.reload_display(display_logo)
-
-
-            # WILL NEED TO CLEAN THIS UP IN A SEPARATED CLASS AND/OR FUNCTION LATER.
-            case COMMANDS.LIST_POSTS:
-                getAllPosts = postRequests.get_all().get("data")
-
-                clean_post_str = ""
-
-                for post in getAllPosts:
-                    clean_post_str += f"Title: {post["title"]}\n"
-                    clean_post_str += f"Content: {post["content"]}\n"
-                    clean_post_str += "\n"
-
-                self._clear_display()
-                self.display(clean_post_str, "one-liner")
-                self.user_input = [] # clean after sucessfull command run
-
-            case _:
-                self.display_user_input()
-                pass
-
-
+        command.get("action")()
 
 if __name__ == "__main__":
     try:
