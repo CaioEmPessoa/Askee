@@ -12,11 +12,6 @@ from Interatcion.style_constants import COLORS, LOGOS
 from PublicService import PublicService
 import text_generators as t_gen
 
-#TODO WILL PROBABLY MOVE THIS IMPORT ELSEWHERE LATER
-from AskeeRequests.Post import PostRequests
-
-postRequests = PostRequests()
-
 class AskeeCLI:
     def __init__(self, configs):
         self.configs = configs
@@ -25,20 +20,23 @@ class AskeeCLI:
         self.mode = self.configs.mode
         self.user_input = self.configs.user_input
 
-        self.public_service = PublicService(self, self.configs)
         self.text_generator = t_gen.TextGenerator(self.configs)
+        self.public_service = PublicService(self, self.configs, self.text_generator)
         self.commands = Commands(self.public_service)
         self.actions = Actions(self.public_service)
 
-        self.configs.current_screen = "START_MENU"
-        self._clear_display()
+        self.configs.current_screen = self.text_generator.start_screen()
+        self.clear_display()
         self.display(self.text_generator.start_screen(), "instant")
 
-    def reload_display(self, display_logo=""):
-        self._clear_display()
-        self.display(self.text_generator.start_screen(), display_logo)
+    def reload_display(self, display_mode="one-liner"):
+        self.clear_display()
+        self.display(
+            self.configs.current_color + self.configs.current_screen,
+            display_mode
+            )
 
-    def _clear_display(self):
+    def clear_display(self):
         os.system('clear' if os.name == 'posix' else 'cls')
 
     def handle_input(self):
@@ -51,6 +49,9 @@ class AskeeCLI:
             elif current_char == "\n" and "".join(self.user_input) in [command.name for command in self.commands]:
                 self.exec_command("".join(self.user_input))
                 continue
+
+            # do not let user chars surpass terminal width
+            if len(self.user_input) >= self.configs.terminal_width: continue
 
             self.user_input.append(current_char)
             self.display_user_input()
@@ -75,8 +76,10 @@ class AskeeCLI:
             print("(view_mode)", end="\r\r")
 
     def display_user_input(self):
-        print("", end="\r\r")
-        print("> " + "".join(self.user_input), end="\r\r")
+        user_typed_string = "".join(self.user_input)
+
+        print("  " * round(self.configs.terminal_width/2), end="\r\r")
+        print("> " + user_typed_string, end="\r")
 
     def exec_action(self, action):
         self.actions.run(action)
