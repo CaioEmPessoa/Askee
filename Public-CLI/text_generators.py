@@ -26,6 +26,28 @@ class TextGenerator:
 
         return string
 
+    def error_screen(self, error_logo, error_msg):
+        string =  error_logo
+        string += f"\n\n '{error_msg}'"
+
+        string += self.fill_remaining_space(string)
+
+        return string
+
+    def post(self, post):
+        string = f" POST # {post["title"]}\n\n"
+
+        string += f"  {post["content"]}\n"
+
+        if post.get('comments'):
+            string += self.comment(post['comments']) # test if works
+
+        string += "\n"
+
+        string += self.fill_remaining_space(string)
+
+        return string
+
     def posts(self, posts):
         string = "Posts :\n\n"
 
