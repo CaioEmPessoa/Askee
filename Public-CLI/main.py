@@ -17,7 +17,6 @@ class AskeeCLI:
         self.configs = configs
 
         # Interaction variables
-        self.mode = self.configs.mode
         self.user_input = self.configs.user_input
 
         self.text_generator = t_gen.TextGenerator(self.configs)
@@ -40,7 +39,10 @@ class AskeeCLI:
         os.system('clear' if os.name == 'posix' else 'cls')
 
     def handle_input(self):
-        while self.mode == MODES.EDIT:
+        # TODO: Create variable to controll and do not let
+        # more than one instanec of this function run at the same time
+        while self.configs.mode == MODES.EDIT:
+
             current_char = getkey()
             if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
@@ -48,7 +50,7 @@ class AskeeCLI:
 
             elif current_char == "\n" and "".join(self.user_input) in [command.name for command in self.commands]:
                 self.exec_command("".join(self.user_input))
-                continue
+                break
 
             # do not let user chars surpass terminal width
             if len(self.user_input) >= self.configs.terminal_width: continue
@@ -69,11 +71,9 @@ class AskeeCLI:
             case _:
                 print(string)
 
-        if self.mode == MODES.EDIT:
+        if self.configs.mode == MODES.EDIT:
             self.display_user_input()
             self.handle_input()
-        else:
-            print("(view_mode)", end="\r\r")
 
     def display_user_input(self):
         user_typed_string = "".join(self.user_input)
