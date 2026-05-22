@@ -7,7 +7,7 @@ class TextGenerator:
         return "".join('\n' for i in range(remaining_space))
 
     def start_screen(self):
-        string = self.generic(self.configs.current_logo) # start string
+        string = self.configs.current_logo # start string
         string += "\n"
         string += " Type 'help' for help.\n"
         string += '   ↑ ↓ Change the logo\n'
@@ -17,10 +17,59 @@ class TextGenerator:
         return string
 
     def help_screen(self):
-        string =  self.generic()
-        string += "view posts <category> : Show all posts. Can search by category"
-        string += "view categories       : Show all categories"
-        string += "view users <active>   : Show all users. Can search by active (bool)"
+        string =  "List of all commands/actions :\n\n"
+        string += "view posts <category> : Show all posts. Can search by category\n"
+        string += "view categories       : Show all categories\n"
+        string += "view users <active>   : Show all users. Can search by active (bool)\n"
 
-    def generic(self, string):
-        return self.configs.current_color + string
+        string += self.fill_remaining_space(string)
+
+        return string
+
+    def posts(self, posts):
+        string = "Posts :\n\n"
+
+        if not posts: string += "  Nenhum post encontrado!"
+
+        for post in posts:
+            string += f"Title: {post["title"]}\n"
+            string += f"Content: {post["content"]}\n"
+
+            if post.get('comments'):
+                string += self.comment(post['comments']) # test if works
+
+            string += "\n"
+
+        string += self.fill_remaining_space(string)
+
+        return string
+
+    def comments(self, comments):
+        string = "Comments :\n\n"
+
+        if not comments: string += "  Nenhum comentário encontrado!"
+
+        for comment in comments:
+            string += f"Post (id): {comment["post_id"]}\n"
+            string += f"User (id): {comment["user_id"]}\n"
+            string += f"Content: {comment["content"]}\n"
+            string += "\n"
+
+        string += self.fill_remaining_space(string)
+
+        return string
+
+    def categories(self, categories):
+        string = "Categories :\n\n"
+
+        if not categories: string += "  Nenhuma categoria encontrada!"
+
+        for category in categories:
+            string += f"Nome : {category["name"]}\n"
+            string += f"Descrição : {category["description"]}\n"
+            string += f"Icon : {category["icon"]}\n"
+            string += "\n"
+
+        string += self.fill_remaining_space(string)
+
+        return string
