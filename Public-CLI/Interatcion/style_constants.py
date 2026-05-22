@@ -50,3 +50,17 @@ class COLORS(StrEnum):
         members = list(COLORS)
         next_index = (members.index(self) - 1) % len(members)
         return members[next_index]
+
+class ERRORS(StrEnum):
+    DEFAULT = '''
+
+!     ______    ______    ______    ______    ______     !
+!    /      \  /      \  /      \  /      \  /      \    !
+!   |  $$$$$$\|  $$$$$$\|  $$$$$$\|  $$$$$$\|  $$$$$$\   !
+!   | $$    $$| $$   \$$| $$   \$$| $$  | $$| $$   \$$   !
+!   | $$$$$$$$| $$      | $$      | $$__/ $$| $$         !
+!    \$$     \| $$      | $$       \$$    $$| $$         !
+!     \$$$$$$$ \$$       \$$        \$$$$$$  \$$         !
+!                                                        !
+!
+    '''
