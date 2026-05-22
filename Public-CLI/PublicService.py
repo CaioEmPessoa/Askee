@@ -1,6 +1,9 @@
 
 from AskeeRequests import *
 
+from Interatcion.actions_controll import MODES
+from Interatcion.style_constants import ERRORS
+
 class PublicService:
     def __init__(self, main, config, textGenerator):
         self.mainClass = main
@@ -14,6 +17,8 @@ class PublicService:
 
     # ============ ACTIONS FUNCTIONS ============
     def toggle_app_view(self):
+        return
+        # modes will not function as I first intended. TODO: change this function, probably remove it.
         current_mode = self.configClass.mode
         self.configClass.mode = MODES.VIEW if current_mode == MODES.EDIT else MODES.EDIT #TODO: import constants
 
@@ -36,7 +41,15 @@ class PublicService:
             self.mainClass.user_input.pop()
             self.mainClass.display_user_input()
 
-    # ============ COMMANDS FUNCTIONS ============
+    # ============ COMMAND VIEW FUNCTIONS ============
+    def display_error(self, error_msg):
+        error_logo = ERRORS.DEFAULT #TODO: change this to a random later
+        self.configClass.current_screen = self.textGenerator.error_screen(
+            error_logo, error_msg
+            )
+
+        self.mainClass.reload_display("left-right-char")
+
     def view_home(self):
         home_string = self.textGenerator.start_screen()
         self.configClass.current_screen = home_string
@@ -57,6 +70,17 @@ class PublicService:
 
         self.mainClass.reload_display()
 
+    def view_post(self, id): # remove this parameter later ?... idk
+        postResponse = self.postRequests.get_by_id(id)
+        if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+
+        postData = postResponse.jsonResponse.get('data')
+
+        posts_string = self.textGenerator.post(postData)
+        self.configClass.current_screen = posts_string
+
+        self.mainClass.reload_display()
+
     def view_comments(self):
         getAllComments = self.commentRequests.get_all().get("data")
 
@@ -72,3 +96,27 @@ class PublicService:
         self.configClass.current_screen = categories_string
 
         self.mainClass.reload_display()
+
+    # ============ COMMAND INSERT FUNCTIONS ============
+    def new_post(self):
+        self.configClass.mode = MODES.VIEW
+        self.configClass.current_screen = self.textGenerator.fill_remaining_space("") #TODO: change this view
+        self.mainClass.reload_display("instant")
+
+        post_title = input(" Post Title: \n> ")
+        post_content = input("\n Post content: \n> ")
+
+        self.configClass.mode = MODES.EDIT
+
+        post_payload = {
+            "title": post_title,
+            "content": post_content,
+            "user_id": "mocado",
+            "category_id": "mocado"
+        }
+        response = self.postRequests.post_new(post_payload)
+
+        if response.httpCode != 200:
+            self.display_error(response.jsonResponse.get('message'))
+        else:
+            self.view_post(response.jsonResponse.get('data').get('id'))

@@ -64,6 +64,8 @@ class Commands:
     VIEW_COMMENTS = Command("view comments", "view_comments", "Shows all current comments")
     VIEW_CATEGORIES = Command("view categories", "view_categories", "Shows all current categories")
 
+    NEW_POST = Command("new post", "new_post", "Add a new post")
+
     def __init__(self, public_service):
         self.publicService = public_service
 
