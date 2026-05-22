@@ -27,11 +27,11 @@ class AskeeCLI:
 
         self.configs.current_screen = self.text_generator.start_screen()
         self.clear_display()
-        self.display(self.text_generator.start_screen(), "instant")
+        self.reload_display("instant")
 
     def reload_display(self, display_mode="one-liner"):
         self.clear_display()
-        self.display(
+        self._display(
             self.configs.current_color + self.configs.current_screen,
             display_mode
             )
@@ -56,7 +56,7 @@ class AskeeCLI:
             self.user_input.append(current_char)
             self.display_user_input()
 
-    def display(self, string, display_mode="instant"):
+    def _display(self, string, display_mode="instant"):
         match display_mode:
             case "one-liner":
                 for line in string.split("\n"):
