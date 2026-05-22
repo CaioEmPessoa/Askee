@@ -58,8 +58,11 @@ class Command:
 
 class Commands:
     '''Commands that needs to be written in edit mode.'''
-    HELP = Command("help", "show_help", "Shows the help message")
+    HELP = Command("help", "view_help", "Shows the help message")
+    HOME = Command("home", "view_home", "Shows the home")
     VIEW_POSTS = Command("view posts", "view_posts", "Shows all current posts")
+    VIEW_COMMENTS = Command("view comments", "view_comments", "Shows all current comments")
+    VIEW_CATEGORIES = Command("view categories", "view_categories", "Shows all current categories")
 
     def __init__(self, public_service):
         self.publicService = public_service
