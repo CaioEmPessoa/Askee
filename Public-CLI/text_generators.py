@@ -2,8 +2,8 @@ class TextGenerator:
     def __init__(self, configs):
         self.configs = configs
 
-    def fill_remaining_space(self, string):
-        remaining_space = self.configs.terminal_height - string.count('\n')
+    def fill_remaining_space(self, string, divide_ammount=1):
+        remaining_space = round((self.configs.terminal_height / divide_ammount) - string.count('\n'))
         return "".join('\n' for i in range(remaining_space))
 
     def start_screen(self):

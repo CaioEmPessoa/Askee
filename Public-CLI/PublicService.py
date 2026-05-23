@@ -100,7 +100,7 @@ class PublicService:
     # ============ COMMAND INSERT FUNCTIONS ============
     def new_post(self):
         self.configClass.mode = MODES.VIEW
-        self.configClass.current_screen = self.textGenerator.fill_remaining_space("") #TODO: change this view
+        self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
         self.mainClass.reload_display("instant")
 
         post_title = input(" Post Title: \n> ")
