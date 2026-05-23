@@ -54,6 +54,7 @@ class AskeeCLI:
 
             # do not let user chars surpass terminal width
             if len(self.user_input) >= self.configs.terminal_width: continue
+            if current_char == "\n": continue
 
             self.user_input.append(current_char)
             self.display_user_input()
