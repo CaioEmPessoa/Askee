@@ -6,11 +6,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
 
-from telas.comentario import Ui_Dialog
+from windows.criarpost import Ui_Dialog
 import os,sys
 
-class comentario(QDialog):
+class criarpost(QDialog):
     def __init__(self,*args,**argvs):
-        super(comentario,self).__init__(*args,**argvs)
+        super(criarpost,self).__init__(*args,**argvs)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+

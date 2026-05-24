@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
 
-from telas.login import Ui_jan_login
-from modulos.cadastro import cadastro
-from modulos.telaposts import telaposts
+from windows.login import Ui_jan_login
+from modules.cadastro import cadastro
+from modules.telaposts import telaposts
 
 import os,sys
 
@@ -18,7 +18,7 @@ class login(QDialog):
         self.ui = Ui_jan_login()
         self.ui.setupUi(self)
         self.ui.log_butt_enter.clicked.connect(self.login)
-        self.ui.log_butt_cadst.clicked.connect(self.add)
+        self.ui.log_butt_cadst.clicked.connect(self.tela_cadastro)
 
     def login(self):
         usuario = "luca"
@@ -33,6 +33,6 @@ class login(QDialog):
         else:
             QMessageBox.warning(QMessageBox(),"login incorreto!")
 
-    def add(self):
+    def tela_cadastro(self):
         add = cadastro()
         add.exec_()

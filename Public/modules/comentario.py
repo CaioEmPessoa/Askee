@@ -5,11 +5,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
-from telas.cadastro import Ui_jan_cadastro
+
+from windows.comentario import Ui_Dialog
 import os,sys
 
-class cadastro(QDialog):
+class comentario(QDialog):
     def __init__(self,*args,**argvs):
-        super(cadastro,self).__init__(*args,**argvs)
-        self.ui = Ui_jan_cadastro()
+        super(comentario,self).__init__(*args,**argvs)
+        self.ui = Ui_Dialog()
         self.ui.setupUi(self)

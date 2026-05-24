@@ -7,7 +7,8 @@ class AskeeRequestsBase(Requests):
         super().__init__(appname)
 
     def get_all(self):
-        r = self.get_request()
+        try: r = self.get_request()
+        except: return {"data": None, "statusCode": 500}
         return r.jsonResponse, r.statusCode
 
     def get_by_id(self, id):

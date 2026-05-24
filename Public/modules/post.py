@@ -5,8 +5,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
-from telas.post import Ui_MainWindow
-from modulos.comentario import comentario
+
+from windows.post import Ui_MainWindow
+from modules.comentario import comentario
 import os,sys
 
 class post(QMainWindow):
