@@ -7,21 +7,23 @@ class MODES(StrEnum):
 
 
 class Action:
-    def __init__(self, key, method="", description="", **kargs):
+    def __init__(self, key, method="", key_symbol="", description="", hidden=False, **kargs):
         self.key = key
         self.method = method
+        self.key_symbol = key_symbol
         self.description = description
+        self.hidden = hidden
 
         self.kargs = kargs
 
 class Actions:
     '''Instant commands that work anywhere in the CLI by hotkeys'''
-    TOGGLE_VIEW    = Action(keys.F1, "toggle_app_view")
-    CHANGE_LOGO_UP = Action(keys.UP, "change_app_logo", direction='right')
-    CHANGE_LOGO_DN = Action(keys.DOWN, "change_app_logo", direction='left')
-    CHANGE_COLOR_L = Action(keys.LEFT, "change_app_color", direction='right')
-    CHANGE_COLOR_R = Action(keys.RIGHT, "change_app_color", direction='left')
-    BACKSPACE      = Action(keys.BACKSPACE, "backspace_action")
+    TOGGLE_VIEW    = Action(keys.F1, "toggle_app_view", hidden=True)
+    CHANGE_LOGO_UP = Action(keys.UP, "change_app_logo", '↑', "Changes the home logo", direction='right')
+    CHANGE_LOGO_DN = Action(keys.DOWN, "change_app_logo", '↓', "Changes the home logo", direction='left')
+    CHANGE_COLOR_L = Action(keys.LEFT, "change_app_color", '←', "Changes the CLI color", direction='right')
+    CHANGE_COLOR_R = Action(keys.RIGHT, "change_app_color", '→', "Changes the CLI color", direction='left')
+    BACKSPACE      = Action(keys.BACKSPACE, "backspace_action", hidden=True)
 
     def __init__(self, public_service=None):
         self.public_service = public_service

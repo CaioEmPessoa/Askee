@@ -1,3 +1,5 @@
+from Interatcion.actions_controll import Commands, Actions
+
 class TextGenerator:
     def __init__(self, configs):
         self.configs = configs
@@ -17,10 +19,31 @@ class TextGenerator:
         return string
 
     def help_screen(self):
-        string =  "List of all commands/actions :\n\n"
-        string += "view posts <category> : Show all posts. Can search by category\n"
-        string += "view categories       : Show all categories\n"
-        string += "view users <active>   : Show all users. Can search by active (bool)\n"
+
+        actions_class = Actions('')
+        commands_class = Commands('')
+
+        string = "Actions:\n"
+        string += "(Instant commands that work anywhere in the CLI by hotkeys)\n\n"
+
+        biggest_desc = max([len(action.description) if action.hidden != True else 0 for action in actions_class])+2
+
+        string += f"{'Action ':<{biggest_desc}}  | Key \n"
+        string += f"{'-'*(biggest_desc+2)}|{'-'*10}\n"
+        for action in actions_class:
+            if action.hidden == True: continue
+            string += f" {action.description:<{biggest_desc}} | {action.key_symbol}\n"
+
+        string +=  "\n\nCommands :\n"
+        string += "(Commands that needs to be written in the CLI)\n\n"
+
+        biggest_desc = max([len(command.description) for command in commands_class])+2
+        biggest_name = max([len(command.name) for command in commands_class])+2
+
+        string += f"{"Command ":<{biggest_name}}   |  {"Description":<{biggest_desc}} \n"
+        string += f"{'-'*(biggest_name+3)}|{'-'*(biggest_desc+1)}\n"
+        for command in commands_class:
+            string += f"  {command.name:<{biggest_name}} | {command.description:<{biggest_desc}}\n"
 
         string += self.fill_remaining_space(string)
 
