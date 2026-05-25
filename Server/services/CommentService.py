@@ -3,11 +3,11 @@ from services.PostService import PostService
 from repositories.Post import Post
 
 postRepository = Post()
-post_service = PostService(postRepository)
 
 class CommentService:
   def __init__(self, comment_repository):
     self.repository = comment_repository
+    self.post_service = PostService(postRepository)
 
   def validate_comment(self, data):
     # Validação do usuário
@@ -64,7 +64,7 @@ class CommentService:
 
     if response:
       # Inserindo dados do post e do usuário
-      post = post_service.list_post(response["post_id"])
+      post = self.post_service.list_post(response["post_id"])
 
       response["post"] = post["data"]
 
