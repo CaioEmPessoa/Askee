@@ -103,7 +103,20 @@ class PublicService:
         self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
         self.mainClass.reload_display("instant")
 
-        post_title = input(" Post Title: \n> ")
+        categories = self.categoryRequests.get_all()
+        if not categories.get('data'): self.display_error(categories.get('message'))
+
+        print("Select the category of your post:")
+        categories_list = []
+        category_internal_id = 1
+        for category in categories.get('data'):
+            categories_list.append((category.get('id'), category_internal_id))
+            print(category_internal_id, category.get('name'))
+
+            category_internal_id += 1
+
+        post_category = int(input("\n> "))
+        post_title = input("\n Post Title: \n> ")
         post_content = input("\n Post content: \n> ")
 
         self.configClass.mode = MODES.EDIT
@@ -111,8 +124,8 @@ class PublicService:
         post_payload = {
             "title": post_title,
             "content": post_content,
-            "user_id": "mocado",
-            "category_id": "mocado"
+            "category_id": categories_list[post_category-1][0],
+            "user_id": "mocado"
         }
         response = self.postRequests.post_new(post_payload)
 
