@@ -15,7 +15,7 @@ class CliConfigs():
         self.mode = MODES.EDIT
         self.command = None
         self.user_input = []
-        self.current_screen = "START_MENU"
+        self.current_screen = ""
 
         self.current_categories = []
         self.current_posts = []

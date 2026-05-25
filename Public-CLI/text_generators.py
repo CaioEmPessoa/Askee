@@ -63,7 +63,9 @@ class TextGenerator:
         string += f"  {post["content"]}\n"
 
         if post.get('comments'):
-            string += self.comment(post['comments']) # test if works
+            string += "\n"
+            string += f"{'-' * self.configs.terminal_width}\n\n"
+            string += self.comments(post['comments'], fill=False)
 
         string += "\n"
 
@@ -71,7 +73,7 @@ class TextGenerator:
 
         return string
 
-    def posts(self, posts):
+    def posts(self, posts, fill=True):
         string = "Posts :\n\n"
 
         if not posts: string += "  Nenhum post encontrado!"
@@ -83,36 +85,39 @@ class TextGenerator:
 
             string += f"\n\n{'-' * self.configs.terminal_width}\n\n"
 
-            if post.get('comments'):
-                string += self.comment(post['comments']) # test if works
-
             string += "\n"
 
-        string += self.fill_remaining_space(string)
+        if fill:
+            string += self.fill_remaining_space(string)
 
         return string
 
-    def comments(self, comments):
+    def comments(self, comments, fill=True):
         string = "Comments :\n\n"
 
         if not comments: string += "  Nenhum comentário encontrado!"
 
         for comment in comments:
-            string += f"Post (id): {comment["post_id"]}\n"
-            string += f"User (id): {comment["user_id"]}\n"
-            string += f"Content: {comment["content"]}\n"
+            string += f"[!!!] - Name:\n"
+            string += f"  {comment["content"]}\n\n"
+
+            third_size = round(self.configs.terminal_width/3)
+            string += f"{' ' * third_size}{'-' * third_size}{' ' * third_size}\n\n"
             string += "\n"
 
-        string += self.fill_remaining_space(string)
+        if fill:
+            string += self.fill_remaining_space(string)
 
         return string
 
-    def category(self, category):
-        string = "Categoria :\n\n"
+    def category(self, category, posts):
+        string = "Categoria :\n"
 
         string += f"   [{category['icon']}] - {category["name"]}\n"
         string += f"   Descrição : {category["description"]}\n"
         string += "\n"
+
+        string += self.posts(posts, fill=False)
 
         string += self.fill_remaining_space(string)
 

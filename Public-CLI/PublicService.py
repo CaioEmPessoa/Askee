@@ -75,9 +75,35 @@ class PublicService:
 
         self.mainClass.reload_display()
 
+    # Not used in a single command. Stayied cause might be usefull, but was substituted by view category.
+    def view_posts_by_category(self, categoryId=None):
+        if not categoryId:
+            if not self.configClass.current_categories:
+                self.view_categories()
+            self.start_type(clean=False)
+
+            print("Please select the category number:")
+            tmp_id = int(input("> "))-1
+
+            self.end_type()
+
+            categoryId = self.configClass.current_categories[tmp_id].get('id')
+
+        getPosts = self.postRequests.get_posts_by_category_id(categoryId).jsonResponse.get("data")
+
+        for i in range(1, len(getPosts)+1):
+            getPosts[i-1].update({"tmp_id": i})
+
+        self.configClass.current_posts = getPosts
+
+        posts_string = self.textGenerator.posts(getPosts)
+        self.configClass.current_screen = posts_string
+
+        self.mainClass.reload_display()
+
     def view_post(self, id=None):
         if not id:
-            if not self.configClass.current_posts:
+            if not self.configClass.current_posts or not isinstance(self.configClass.current_posts, list):
                 self.view_posts()
             self.start_type(clean=False)
 
@@ -88,13 +114,21 @@ class PublicService:
 
             id = self.configClass.current_posts[tmp_id].get('id')
 
+        # Get post
         postResponse = self.postRequests.get_by_id(id)
         if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
 
         postData = postResponse.jsonResponse.get('data')
 
+        # Get post comments
+        commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
+        if commentsResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+
+        postData["comments"] = commentsResponse.jsonResponse.get('data')
+
         posts_string = self.textGenerator.post(postData)
         self.configClass.current_screen = posts_string
+        self.configClass.current_posts = postData
 
         self.mainClass.reload_display()
 
@@ -124,21 +158,41 @@ class PublicService:
 
             id = self.configClass.current_categories[tmp_id].get('id')
 
-        postResponse = self.categoryRequests.get_by_id(id)
-        if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+        # Get category
+        categoryResponse = self.categoryRequests.get_by_id(id)
+        if categoryResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
 
-        categoryData = postResponse.jsonResponse.get('data')
+        categoryData = categoryResponse.jsonResponse.get('data')
 
-        category_string = self.textGenerator.category(categoryData)
+        # Get posts
+        postsData = self.postRequests.get_posts_by_category_id(categoryData.get('id')).jsonResponse.get("data")
+
+        for i in range(1, len(postsData)+1):
+            postsData[i-1].update({"tmp_id": i})
+
+        self.configClass.current_posts = postsData
+
+        category_string = self.textGenerator.category(categoryData, postsData)
         self.configClass.current_screen = category_string
 
         self.mainClass.reload_display()
 
-    def view_comments(self):
+    def view_comments(self, postId):
         getAllComments = self.commentRequests.get_all().get("data")
 
         comments_string = self.textGenerator.comments(getAllComments)
         self.configClass.current_screen = comments_string
+
+        self.mainClass.reload_display()
+
+    def view_post_comments(self, postId):
+        commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
+        if commentsResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+
+        commentsData = commentsResponse.jsonResponse.get('data')
+
+        comments_string = self.textGenerator.comments(getAllComments)
+        self.configClass.current_screen += comments_string # += bc its used only at posts view. (or its supposed to)
 
         self.mainClass.reload_display()
 
@@ -208,3 +262,27 @@ class PublicService:
             self.display_error(response.jsonResponse.get('message'))
         else:
             self.view_category(response.jsonResponse.get('data').get('id'))
+
+    def new_comment(self):
+        if isinstance(self.configClass.current_posts, list):
+            self.display_error("Please open a post to start commenting.")
+
+        post_id = self.configClass.current_posts.get('id')
+
+        self.start_type()
+
+        comment_content = input("\n Content: \n> ")
+
+        self.end_type()
+
+        post_payload = {
+            "user_id": "Caio",
+            "post_id": post_id,
+            "content": comment_content
+        }
+        response = self.commentRequests.post_new(post_payload)
+
+        if response.httpCode != 200:
+            self.display_error(response.jsonResponse.get('message'))
+        else:
+            self.view_post(post_id)

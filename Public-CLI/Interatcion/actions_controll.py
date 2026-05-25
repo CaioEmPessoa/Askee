@@ -62,16 +62,15 @@ class Commands:
     '''Commands that needs to be written in edit mode.'''
     HELP = Command("help", "view_help", "Shows the help message")
     HOME = Command("home", "view_home", "Shows the home")
-    VIEW_POSTS = Command("view posts", "view_posts", "Shows all current posts")
-    VIEW_COMMENTS = Command("view comments", "view_comments", "Shows all current comments")
+    VIEW_POSTS = Command("view all posts", "view_posts", "Shows all current posts")
     VIEW_CATEGORIES = Command("view categories", "view_categories", "Shows all current categories")
 
-    VIEW_CATEGORY = Command("view category", "view_category", "View a single category")
+    VIEW_CATEGORY = Command("view category", "view_category", "View a single category and its posts")
     VIEW_POST = Command("view post", "view_post", "View a single post")
 
     NEW_POST = Command("new post", "new_post", "Add a new post")
     NEW_CATAEGORY = Command("new category", "new_category", "Add a new category")
-    NEW_COMMENT = Command("new comment", "new_comment", "Add a new comment into a post")
+    NEW_COMMENT = Command("comment", "new_comment", "Add a new comment into a post")
 
     def __init__(self, public_service):
         self.publicService = public_service
