@@ -2,8 +2,17 @@ from repositories.RepositoryBase import RepositoryBase
 
 # Repositório para o domínio de usuários, aqui vai ter metodos uteis check_permissions, etc.
 class UserRepository(RepositoryBase):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(UserRepository, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        super().__init__("Users")
+        if not getattr(self, '_initialized', False):
+            super().__init__("Users")
+            self._initialized = True
 
     def get_by_email(self, email):
         if not email:
