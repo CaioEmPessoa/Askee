@@ -20,7 +20,7 @@ def list_all_comments():
     comment = comment_service.list_comments()
     return jsonify(comment), comment["status"]
 
-@comment_bp.route('/comments/post/<id>', methods=['GET'])
+@comment_bp.route('/comments/post/<post_id>', methods=['GET'])
 def list_comment_by_post_id(post_id):
     comment = comment_service.list_comment_by_post_id(post_id)
     return jsonify(comment), comment["status"]

@@ -71,16 +71,15 @@ class PostService:
   def list_posts_by_category(self, category_id):
     posts = self.list_posts()
 
-    if posts['status'] != 200 or posts['data'] == []:
+    if posts["status"] != 200 or posts["data"] == []:
       return posts
 
-    result = [post for post in posts['data'] if post['category_id'] == category_id]
+    result = [post for post in posts["data"] if post["category_id"] == category_id]
 
     if result:
-      return response_api.build(200, 'Postagens encontradas com sucesso.', result)
+      return response_api.build(200, "Postagens encontradas com sucesso.", result)
     else:
-      return response_api.build(200, 'Nenhuma postagem encontrada para a categoria especificada.')
-
+      return response_api.build(200, "Nenhuma postagem encontrada para a categoria especificada.")
 
   def list_post(self, id):
     response = self.repository.get_by_id(id)

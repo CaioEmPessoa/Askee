@@ -21,9 +21,9 @@ def list_posts():
     #Os status HTTP estão vindo direto do service
     return jsonify(post), post["status"]
 
-@post_bp.route('/posts/category/<id>', methods=['GET'])
-def list_posts_by_category(id):
-    post = post_service.list_posts_by_category(id)
+@post_bp.route('/posts/category/<category_id>', methods=['GET'])
+def list_posts_by_category(category_id):
+    post = post_service.list_posts_by_category(category_id)
     return jsonify(post), post["status"]
 
 @post_bp.route('/posts/<id>', methods=['GET'])
