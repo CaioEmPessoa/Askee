@@ -62,10 +62,9 @@ class TextGenerator:
 
         string += f"  {post["content"]}\n"
 
-        if post.get('comments'):
-            string += "\n"
-            string += f"{'-' * self.configs.terminal_width}\n\n"
-            string += self.comments(post['comments'], fill=False)
+        string += "\n"
+        string += f"{'-' * self.configs.terminal_width}\n\n"
+        string += self.comments(post['comments'], fill=False)
 
         string += "\n"
 
@@ -95,7 +94,8 @@ class TextGenerator:
     def comments(self, comments, fill=True):
         string = "Comments :\n\n"
 
-        if not comments: string += "  Nenhum comentário encontrado!"
+        if not comments: string += "  Nenhum comentário encontrado!\n"
+        if not comments: string += "  Comece postando algo com o command 'comment'!"
 
         for comment in comments:
             string += f"[!!!] - Name:\n"
