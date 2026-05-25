@@ -31,7 +31,6 @@ class Requests:
         return f"{self.start_path}{"/" if path else ""}{path}"
 
     def get_request(self, path="", params={}):
-        print(self._build_path(path))
         return RequestReturn( requests.get(
             url=self._build_path(path),
             params= params

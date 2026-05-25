@@ -81,6 +81,17 @@ class PublicService:
 
         self.mainClass.reload_display()
 
+    def view_category(self, id): # remove this parameter later ?... idk
+        postResponse = self.categoryRequests.get_by_id(id)
+        if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+
+        categoryData = postResponse.jsonResponse.get('data')
+
+        category_string = self.textGenerator.category(categoryData)
+        self.configClass.current_screen = category_string
+
+        self.mainClass.reload_display()
+
     def view_comments(self):
         getAllComments = self.commentRequests.get_all().get("data")
 
@@ -133,3 +144,26 @@ class PublicService:
             self.display_error(response.jsonResponse.get('message'))
         else:
             self.view_post(response.jsonResponse.get('data').get('id'))
+
+    def new_category(self):
+        self.configClass.mode = MODES.VIEW
+        self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
+        self.mainClass.reload_display("instant")
+
+        category_name = input("\n Category name: \n> ")
+        category_description = input("\n Category description: \n> ")
+        category_icon = input("\n Category icon: \n> ")
+
+        self.configClass.mode = MODES.EDIT
+
+        post_payload = {
+            "name": category_name,
+            "description": category_description,
+            "icon": category_icon
+        }
+        response = self.categoryRequests.post_new(post_payload)
+
+        if response.httpCode != 200:
+            self.display_error(response.jsonResponse.get('message'))
+        else:
+            self.view_category(response.jsonResponse.get('data').get('id'))
