@@ -17,6 +17,9 @@ class CliConfigs():
         self.user_input = []
         self.current_screen = "START_MENU"
 
+        self.current_categories = []
+        self.current_posts = []
+
         # Style variables
         self.current_color = COLORS.GREEN
         self.current_logo = LOGOS.ASKEE_LOGO_TOILET

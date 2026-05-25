@@ -65,12 +65,29 @@ class PublicService:
     def view_posts(self):
         getAllPosts = self.postRequests.get_all().get("data")
 
+        for i in range(1, len(getAllPosts)+1):
+            getAllPosts[i-1].update({"tmp_id": i})
+
+        self.configClass.current_posts = getAllPosts
+
         posts_string = self.textGenerator.posts(getAllPosts)
         self.configClass.current_screen = posts_string
 
         self.mainClass.reload_display()
 
-    def view_post(self, id): # remove this parameter later ?... idk
+    def view_post(self, id=None):
+        if not id:
+            if not self.configClass.current_posts:
+                self.view_posts()
+            self.start_type(clean=False)
+
+            print("Please select the post number:")
+            tmp_id = int(input("> "))-1
+
+            self.end_type()
+
+            id = self.configClass.current_posts[tmp_id].get('id')
+
         postResponse = self.postRequests.get_by_id(id)
         if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
 
@@ -81,7 +98,32 @@ class PublicService:
 
         self.mainClass.reload_display()
 
-    def view_category(self, id): # remove this parameter later ?... idk
+    def view_categories(self):
+        getAllCategories = self.categoryRequests.get_all().get("data")
+
+        for i in range(1, len(getAllCategories)+1):
+            getAllCategories[i-1].update({"tmp_id": i})
+
+        self.configClass.current_categories = getAllCategories
+        categories_string = self.textGenerator.categories(getAllCategories)
+        self.configClass.current_screen = categories_string
+
+        self.mainClass.reload_display()
+
+    def view_category(self, id=None):
+
+        if not id:
+            if not self.configClass.current_categories:
+                self.view_categories()
+            self.start_type(clean=False)
+
+            print("Please select the category number:")
+            tmp_id = int(input("> "))-1
+
+            self.end_type()
+
+            id = self.configClass.current_categories[tmp_id].get('id')
+
         postResponse = self.categoryRequests.get_by_id(id)
         if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
 
@@ -100,19 +142,20 @@ class PublicService:
 
         self.mainClass.reload_display()
 
-    def view_categories(self):
-        getAllCategories = self.categoryRequests.get_all().get("data")
-
-        categories_string = self.textGenerator.categories(getAllCategories)
-        self.configClass.current_screen = categories_string
-
-        self.mainClass.reload_display()
-
     # ============ COMMAND INSERT FUNCTIONS ============
-    def new_post(self):
+
+    def start_type(self, clean=True):
         self.configClass.mode = MODES.VIEW
-        self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
-        self.mainClass.reload_display("instant")
+
+        if clean:
+            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
+            self.mainClass.reload_display("instant")
+
+    def end_type(self):
+        self.configClass.mode = MODES.EDIT
+
+    def new_post(self):
+        self.start_type()
 
         categories = self.categoryRequests.get_all()
         if not categories.get('data'): self.display_error(categories.get('message'))
@@ -130,7 +173,7 @@ class PublicService:
         post_title = input("\n Post Title: \n> ")
         post_content = input("\n Post content: \n> ")
 
-        self.configClass.mode = MODES.EDIT
+        self.end_type()
 
         post_payload = {
             "title": post_title,
@@ -146,15 +189,13 @@ class PublicService:
             self.view_post(response.jsonResponse.get('data').get('id'))
 
     def new_category(self):
-        self.configClass.mode = MODES.VIEW
-        self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
-        self.mainClass.reload_display("instant")
+        self.start_type()
 
         category_name = input("\n Category name: \n> ")
         category_description = input("\n Category description: \n> ")
         category_icon = input("\n Category icon: \n> ")
 
-        self.configClass.mode = MODES.EDIT
+        self.end_type()
 
         post_payload = {
             "name": category_name,

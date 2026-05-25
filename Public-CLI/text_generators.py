@@ -77,8 +77,11 @@ class TextGenerator:
         if not posts: string += "  Nenhum post encontrado!"
 
         for post in posts:
-            string += f"Title: {post["title"]}\n"
-            string += f"Content: {post["content"]}\n"
+            string += f"  {post["tmp_id"]} - {post["title"]}\n"
+            string += f"{'-'*(len(post['title'])+10)}\n"
+            string += f"  {post["content"]}\n"
+
+            string += f"\n\n{'-' * self.configs.terminal_width}\n\n"
 
             if post.get('comments'):
                 string += self.comment(post['comments']) # test if works
@@ -121,7 +124,7 @@ class TextGenerator:
         if not categories: string += "  Nenhuma categoria encontrada!"
 
         for category in categories:
-            string += f"   [{category['icon']}] - {category["name"]}\n"
+            string += f"{category['tmp_id']}  [{category['icon']}] - {category["name"]}\n"
             string += f"   Descrição : {category["description"]}\n"
             string += "\n"
 
