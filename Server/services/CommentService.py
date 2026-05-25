@@ -1,4 +1,9 @@
 from utils import response_api
+from services.PostService import PostService
+from repositories.Post import Post
+
+postRepository = Post()
+post_service = PostService(postRepository)
 
 class CommentService:
   def __init__(self, comment_repository):
@@ -58,6 +63,11 @@ class CommentService:
     response = self.repository.get_by_id(id)
 
     if response:
+      # Inserindo dados do post e do usuário
+      post = post_service.list_post(response["post_id"])
+
+      response["post"] = post["data"]
+
       return response_api.build(200, "Comentário encontrado com sucesso.", response)
     else:
       return response_api.build(200, "Nenhum comentário encontrado.")
