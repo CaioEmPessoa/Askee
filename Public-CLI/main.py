@@ -54,7 +54,9 @@ class AskeeCLI:
 
             # do not let user chars surpass terminal width
             if len(self.user_input) >= self.configs.terminal_width: continue
-            if current_char == "\n": continue
+            if current_char == "\n":
+                print("command not found! Type 'help' to see the list of the available commands.", end="\r")
+                continue
 
             self.user_input.append(current_char)
             self.display_user_input()
