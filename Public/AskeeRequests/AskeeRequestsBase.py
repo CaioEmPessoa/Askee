@@ -2,6 +2,8 @@
 import json
 from Requests import Requests
 
+# Design pattern: Adapter
+# Atua como um tradutor, convertendo a interface de requisições HTTP em uma interface simplificada que o restante do sistema espera utilizar
 class AskeeRequestsBase(Requests):
     def __init__(self, appname):
         super().__init__(appname)

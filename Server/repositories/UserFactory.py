@@ -2,6 +2,8 @@ from User import UserRepository
 from UserMod import UserModRepository
 from UserSuper import UserSuperRepository
 
+# Design pattern: Factory
+# Centraliza a lógica de criação, sendo o único responsável por decidir qual classe instanciar com base no parâmetro recebido e ocultando essa complexidade do restante do sistema
 class UserFactory:
     def __init__(self):
         self._UserModRepository = UserModRepository()

@@ -1,5 +1,8 @@
 from repositories.RepositoryBase import RepositoryBase
 
+# Design Pattern: Singleton
+# O método __new__ intercepta a alocação do objeto, garantindo que apenas uma única instância da classe seja criada na memória e retornada em todas as chamadas futuras
+
 # Repositório para o domínio de usuários, aqui vai ter metodos uteis check_permissions, etc.
 class UserRepository(RepositoryBase):
     _instance = None
