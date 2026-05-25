@@ -40,6 +40,11 @@ class COLORS(StrEnum):
     RED = Fore.RED
     GREEN = Fore.GREEN
     PURPLE = Fore.MAGENTA
+    WHITE = Fore.WHITE
+    BLUE = Fore.BLUE
+    BLACK = Fore.BLACK
+    CYAN = Fore.CYAN
+    YELLOW = Fore.YELLOW
 
     def next(self):
             members = list(COLORS)
