@@ -62,6 +62,20 @@ class CommentService:
     else:
       return response_api.build(200, "Nenhum comentário encontrado.")
 
+  def list_comment_by_post_id(self, post_id):
+    comments = self.repository.get_all()
+
+    if not comments:
+      return response_api.build(200, "Nenhum comentário encontrado.")
+
+    result = [comment for comment in comments if comment["post_id"] == post_id]
+
+    if result:
+      return response_api.build(200, "Comentários encontrados com sucesso.", result)
+    else:
+      return response_api.build(200, "Nenhum comentário encontrado para o post especificado.")
+
+
   def delete_comment(self, id):
     comment = self.repository.get_by_id(id)
 

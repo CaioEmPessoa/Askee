@@ -16,8 +16,13 @@ def new_comments():
     return jsonify(comment), comment["status"]
 
 @comment_bp.route('/comments', methods=['GET'])
-def list_allComments():
+def list_all_comments():
     comment = comment_service.list_comments()
+    return jsonify(comment), comment["status"]
+
+@comment_bp.route('/comments/post/<id>', methods=['GET'])
+def list_comment_by_post_id(post_id):
+    comment = comment_service.list_comment_by_post_id(post_id)
     return jsonify(comment), comment["status"]
 
 @comment_bp.route('/comments/<id>', methods=['GET'])
