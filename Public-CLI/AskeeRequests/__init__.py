@@ -4,6 +4,6 @@ from .Comment import CommentRequests
 from .Users import UsersRequests
 
 Post = PostRequests
-Category = PostRequests
+Category = CategoryRequests
 Comment = CommentRequests
 Users = UsersRequests

@@ -81,15 +81,25 @@ class TextGenerator:
 
         return string
 
+    def category(self, category):
+        string = "Categoria :\n\n"
+
+        string += f"   [{category['icon']}] - {category["name"]}\n"
+        string += f"   Descrição : {category["description"]}\n"
+        string += "\n"
+
+        string += self.fill_remaining_space(string)
+
+        return string
+
     def categories(self, categories):
         string = "Categories :\n\n"
 
         if not categories: string += "  Nenhuma categoria encontrada!"
 
         for category in categories:
-            string += f"Nome : {category["name"]}\n"
-            string += f"Descrição : {category["description"]}\n"
-            string += f"Icon : {category["icon"]}\n"
+            string += f"   [{category['icon']}] - {category["name"]}\n"
+            string += f"   Descrição : {category["description"]}\n"
             string += "\n"
 
         string += self.fill_remaining_space(string)
