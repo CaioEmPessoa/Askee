@@ -1,4 +1,4 @@
-from getkey import getkey
+from readchar import readkey
 from time import sleep
 import termios
 import shutil
@@ -24,14 +24,14 @@ class AskeeCLI:
         self.commands = Commands(self.public_service)
         self.actions = Actions(self.public_service)
 
-        self.configs.current_screen = self.text_generator.start_screen()
+        self.configs.current_screen.add_set(self.text_generator.start_screen())
         self.clear_display()
         self.reload_display("instant")
 
     def reload_display(self, display_mode="one-liner"):
         self.clear_display()
         self._display(
-            self.configs.current_color + self.configs.current_screen,
+            self.configs.current_screen.get(),
             display_mode
             )
 
@@ -43,7 +43,7 @@ class AskeeCLI:
         # more than one instanec of this function run at the same time
         while self.configs.mode == MODES.EDIT:
 
-            current_char = getkey()
+            current_char = readkey()
             if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
                 continue
@@ -62,6 +62,16 @@ class AskeeCLI:
             self.display_user_input()
 
     def _display(self, string, display_mode="instant"):
+        print(self.configs.current_color)
+
+        if not self.configs.animations:
+            display_mode = "instant"
+
+        if self.configs.current_user:
+            print(
+                f"Logged in as: {self.configs.current_user.get('username')}\n"
+            )
+
         match display_mode:
             case "one-liner":
                 for line in string.split("\n"):

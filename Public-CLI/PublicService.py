@@ -12,10 +12,15 @@ class PublicService:
 
         self.postRequests = Post()
         self.userRequests = Users()
+        self.authRequests = Auth()
         self.commentRequests = Comment()
         self.categoryRequests = Category()
 
     # ============ ACTIONS FUNCTIONS ============
+    def toggle_animations(self):
+        self.configClass.animations = not self.configClass.animations
+        print(f"Animations {"enabled" if self.configClass.animations else "disabled"}!", end="\r")
+
     def toggle_app_view(self):
         return
         # modes will not function as I first intended. TODO: change this function, probably remove it.
@@ -41,6 +46,10 @@ class PublicService:
             self.mainClass.user_input.pop()
             self.mainClass.display_user_input()
 
+    def undo_screen(self):
+        self.configClass.current_screen.undo()
+        self.mainClass.reload_display()
+
     # ============ COMMAND VIEW FUNCTIONS ============
     def display_error(self, error_msg):
         error_logo = ERRORS.DEFAULT #TODO: change this to a random later
@@ -58,7 +67,7 @@ class PublicService:
 
     def view_help(self):
         help_string = self.textGenerator.help_screen()
-        self.configClass.current_screen = help_string
+        self.configClass.current_screen.add_set(help_string)
 
         self.mainClass.reload_display("left-right-char")
 
@@ -116,15 +125,20 @@ class PublicService:
 
         # Get post
         postResponse = self.postRequests.get_by_id(id)
-        if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+        if postResponse.httpCode != 200: self.display_error(postResponse.jsonResponse.get('message'))
 
         postData = postResponse.jsonResponse.get('data')
 
         # Get post comments
         commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
-        if commentsResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+        if commentsResponse.httpCode != 200: self.display_error(commentsResponse.jsonResponse.get('message'))
+        postData["comments"] = self.append_comment_user(
+            commentsResponse.jsonResponse.get('data')
+        )
 
-        postData["comments"] = commentsResponse.jsonResponse.get('data')
+        # Get post user
+        usersResponse = self.userRequests.get_by_id(postData.get("user_id"))
+        postData["user"] = usersResponse.jsonResponse.get('data')
 
         posts_string = self.textGenerator.post(postData)
         self.configClass.current_screen = posts_string
@@ -147,7 +161,7 @@ class PublicService:
     def view_category(self, id=None):
 
         if not id:
-            if not self.configClass.current_categories:
+            if not self.configClass.current_categories or not isinstance(self.configClass.current_categories, list):
                 self.view_categories()
             self.start_type(clean=False)
 
@@ -170,6 +184,7 @@ class PublicService:
         for i in range(1, len(postsData)+1):
             postsData[i-1].update({"tmp_id": i})
 
+        self.configClass.current_categories = categoryData
         self.configClass.current_posts = postsData
 
         category_string = self.textGenerator.category(categoryData, postsData)
@@ -177,13 +192,16 @@ class PublicService:
 
         self.mainClass.reload_display()
 
-    def view_comments(self, postId):
-        getAllComments = self.commentRequests.get_all().get("data")
+    def append_comment_user(self, comments):
+        for comment in comments: # get user info
+            usersResponse = self.userRequests.get_by_id(comment.get("user_id"))
+            if usersResponse:
+                comment.update({
+                    'user': usersResponse.jsonResponse.get('data')
+                    })
 
-        comments_string = self.textGenerator.comments(getAllComments)
-        self.configClass.current_screen = comments_string
+        return comments
 
-        self.mainClass.reload_display()
 
     def view_post_comments(self, postId):
         commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
@@ -198,32 +216,108 @@ class PublicService:
 
     # ============ COMMAND INSERT FUNCTIONS ============
 
-    def start_type(self, clean=True):
+    def log_off(self):
+        self.configClass.current_user = []
+        self.view_home()
+
+    def log_in(self):
+
+        self.start_type(remaining_space=100)
+
+        print("Welcome back to askee! \n")
+        print("Please fill as the following to login back to your user: \n")
+
+        user_mail = input("\n Email: \n> ")
+        user_password = input("\n Password: \n> ")
+
+        self.end_type()
+
+        post_payload = {
+            "email": user_mail,
+            "password": user_password
+        }
+        login_response = self.authRequests.login(post_payload)
+
+        if login_response.httpCode != 200: self.display_error(login_response.jsonResponse.get('message'))
+
+        self.configClass.current_user = login_response.jsonResponse.get('data')
+
+        self.view_home()
+
+
+    def sign_up(self):
+
+        self.start_type(remaining_space=100)
+
+        print("Welcome to askee! \n")
+        print("Please fill as the following to create your new user: \n")
+
+        user_mail = input("\n Email: \n> ")
+        user_password = input("\n Password: \n> ")
+        user_name = input("\n Username: \n> ")
+        user_icon = input("\n Icon: \n> ")
+        user_about = input("\n About: \n> ")
+
+        user_question_one = input("\n Do you know the secret question? 0.0\n") == "yes"
+        user_question_two = input("\n How much is 2+2? \n") == "22" if user_question_one else False
+
+        self.end_type()
+
+        post_payload = {
+            "email":user_mail,
+            "password":user_password,
+            "name":user_name,
+            "username":user_name,
+            "icon":user_icon,
+            "about":user_about,
+            "is_moderator":user_question_one,
+            "is_super":user_question_two
+        }
+
+        signing_response = self.authRequests.signup(post_payload)
+
+        if signing_response.httpCode != 200: self.display_error(signing_response.jsonResponse.get('message'))
+
+        input("You Signed-In sucessfully! On pressing 'enter' now you will be prompted to log-in with your newly created user.")
+
+        self.log_in()
+
+    def start_type(self, clean=True, remaining_space=4):
         self.configClass.mode = MODES.VIEW
 
         if clean:
-            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
+            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", remaining_space) #TODO: change this view
             self.mainClass.reload_display("instant")
 
     def end_type(self):
         self.configClass.mode = MODES.EDIT
 
     def new_post(self):
+
+        if not self.configClass.current_user or not self.configClass.current_user.get('is_moderator'):
+            self.display_error("You are not logged-in or does not have the privileges to post something.")
+
         self.start_type()
 
         categories = self.categoryRequests.get_all()
         if not categories.get('data'): self.display_error(categories.get('message'))
 
-        print("Select the category of your post:")
-        categories_list = []
-        category_internal_id = 1
-        for category in categories.get('data'):
-            categories_list.append((category.get('id'), category_internal_id))
-            print(category_internal_id, category.get('name'))
+        if self.configClass.current_categories and not isinstance(self.configClass.current_categories, list):
+            category_id = self.configClass.current_categories.get('id')
+            print(f"Posting at '{self.configClass.current_categories.get('name')}'...")
+        else:
+            print("Select the category of your post:")
+            categories_list = []
+            category_internal_id = 1
+            for category in categories.get('data'):
+                categories_list.append((category.get('id'), category_internal_id))
+                print(category_internal_id, category.get('name'))
 
-            category_internal_id += 1
+                category_internal_id += 1
 
-        post_category = int(input("\n> "))
+            post_category = int(input("\n> "))
+            category_id = categories_list[post_category-1][0]
+
         post_title = input("\n Post Title: \n> ")
         post_content = input("\n Post content: \n> ")
 
@@ -232,8 +326,8 @@ class PublicService:
         post_payload = {
             "title": post_title,
             "content": post_content,
-            "category_id": categories_list[post_category-1][0],
-            "user_id": "mocado"
+            "category_id": category_id,
+            "user_id": self.configClass.current_user.get('id')
         }
         response = self.postRequests.post_new(post_payload)
 
@@ -243,6 +337,10 @@ class PublicService:
             self.view_post(response.jsonResponse.get('data').get('id'))
 
     def new_category(self):
+
+        if not self.configClass.current_user or not self.configClass.current_user.get('is_super'):
+            self.display_error("You are not logged-in or does not have the privileges to create a new category.")
+
         self.start_type()
 
         category_name = input("\n Category name: \n> ")
@@ -264,6 +362,10 @@ class PublicService:
             self.view_category(response.jsonResponse.get('data').get('id'))
 
     def new_comment(self):
+
+        if not self.configClass.current_user:
+            self.display_error("Please login before commenting.")
+
         if isinstance(self.configClass.current_posts, list):
             self.display_error("Please open a post to start commenting.")
 
@@ -276,7 +378,7 @@ class PublicService:
         self.end_type()
 
         post_payload = {
-            "user_id": "Caio",
+            "user_id": self.configClass.current_user.get('id'),
             "post_id": post_id,
             "content": comment_content
         }

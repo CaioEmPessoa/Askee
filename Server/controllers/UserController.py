@@ -23,8 +23,8 @@ def list_users():
     # users_list = [{k: v for k, v in u.items() if k != "password"} for u in users]
     return jsonify({"status": 200, "message": "OK", "data": users}), 200
 
-@user_api.get('/<id>')
-def list_user(id: str):
+@user_api.route('/<id>', methods=['GET'])
+def list_user(id):
     user = user_repository.get_by_id(id)
     if not user:
         return jsonify({"status": 404, "message": "Usuario nao encontrado."}), 404

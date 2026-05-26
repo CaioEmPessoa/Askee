@@ -1,4 +1,4 @@
-from getkey import keys
+from readchar import key as keys
 from enum import StrEnum
 
 class MODES(StrEnum):
@@ -23,6 +23,9 @@ class Actions:
     CHANGE_LOGO_DN = Action(keys.DOWN, "change_app_logo", '↓', "Changes the home logo", direction='left')
     CHANGE_COLOR_L = Action(keys.LEFT, "change_app_color", '←', "Changes the CLI color", direction='right')
     CHANGE_COLOR_R = Action(keys.RIGHT, "change_app_color", '→', "Changes the CLI color", direction='left')
+    TOGGLE_ANIMATION = Action(keys.TAB, "toggle_animations", '⭾', "Disable/Enables the CLI animations")
+    RETURN = Action(keys.CTRL_Z, "undo_screen", 'Ctrl+Z', "Returns to the previous screen")
+    EXIT = Action(None, None, 'ctrl+c', "Exits")
     BACKSPACE      = Action(keys.BACKSPACE, "backspace_action", hidden=True)
 
     def __init__(self, public_service=None):
@@ -62,8 +65,14 @@ class Commands:
     '''Commands that needs to be written in edit mode.'''
     HELP = Command("help", "view_help", "Shows the help message")
     HOME = Command("home", "view_home", "Shows the home")
+
+    SIGN_IN = Command("sign-in", "sign_up", "Sign-in into the askee network")
+    LOGIN = Command("log-in", "log_in", "Log-in into the askee network")
+    LOGOFF = Command("log-off", "log_off", "Sign-in into the askee network")
+
     VIEW_POSTS = Command("view all posts", "view_posts", "Shows all current posts")
     VIEW_CATEGORIES = Command("view categories", "view_categories", "Shows all current categories")
+
 
     VIEW_CATEGORY = Command("view category", "view_category", "View a single category and its posts")
     VIEW_POST = Command("view post", "view_post", "View a single post")

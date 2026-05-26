@@ -2,6 +2,7 @@ from shutil import get_terminal_size
 
 from PublicService import PublicService
 
+from memento import CurrentScreen
 from .style_constants import COLORS, LOGOS
 from .actions_controll import MODES
 
@@ -13,9 +14,11 @@ class CliConfigs():
 
         # Interaction variables
         self.mode = MODES.EDIT
+        self.animations = True
         self.command = None
         self.user_input = []
-        self.current_screen = ""
+        self.current_user = {}
+        self.current_screen = CurrentScreen("")
 
         self.current_categories = []
         self.current_posts = []

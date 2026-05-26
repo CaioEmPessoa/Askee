@@ -20,8 +20,8 @@ class PostService:
     if not content or str(content).strip() == '':
       return response_api.build(400, "É necessário informar o conteúdo da postagem.")
 
-    if len(content) < 30:
-      return response_api.build(400, "O conteúdo deve conter pelo menos 30 caracteres.")
+    if len(content) < 10:
+      return response_api.build(400, "O conteúdo deve conter pelo menos 10 caracteres.")
 
     # ID do usuário
     user_id = data.get("user_id")

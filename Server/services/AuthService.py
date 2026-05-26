@@ -43,8 +43,8 @@ class AuthService:
             return response_api.build(400, "Icon deve ser uma string quando informado.")
         if about is not None and not isinstance(about, str):
             return response_api.build(400, "About deve ser uma string quando informado.")
-        if icon is not None and not re.match(r"^data:image\/(webp|png|jpg|jpeg);base64,", icon.strip(), re.IGNORECASE):
-            return response_api.build(400, "Icon deve ser base64 com data URI de webp/png/jpg/jpeg.")
+        if icon is not None and not len(icon) <=3:
+            return response_api.build(400, "Icon deve ter no máximo 3 caracteres.")
 
         # Validações adicionais de DTO
         if len(normalized_username) < 3:
@@ -83,7 +83,7 @@ class AuthService:
             user_data = {k: v for k, v in response.items() if k != 'password'}
             user_data["token"] = token
 
-            return response_api.build(201, "Usuário criado com sucesso.", user_data)
+            return response_api.build(200, "Usuário criado com sucesso.", user_data)
         else:
             return response_api.build(500, "Houve um erro ao criar o usuário.")
 
