@@ -23,6 +23,7 @@ class Actions:
     CHANGE_LOGO_DN = Action(keys.DOWN, "change_app_logo", '↓', "Changes the home logo", direction='left')
     CHANGE_COLOR_L = Action(keys.LEFT, "change_app_color", '←', "Changes the CLI color", direction='right')
     CHANGE_COLOR_R = Action(keys.RIGHT, "change_app_color", '→', "Changes the CLI color", direction='left')
+    CHANGE_COLOR_R = Action(keys.TAB, "toggle_animations", '→', "Disable/Enables the CLI animations")
     BACKSPACE      = Action(keys.BACKSPACE, "backspace_action", hidden=True)
 
     def __init__(self, public_service=None):
