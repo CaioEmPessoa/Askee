@@ -67,6 +67,9 @@ class TextGenerator:
 
         user = post.get('user')
 
+        if user:
+            user_str = f"[{user.get('icon')}] {user.get('username')} "
+
         string = f"{user_str} | {post["title"]}\n\n"
 
         string += '┌' + ('-' * (fill_size)) + '┐\n'

@@ -121,15 +121,20 @@ class PublicService:
 
         # Get post
         postResponse = self.postRequests.get_by_id(id)
-        if postResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
+        if postResponse.httpCode != 200: self.display_error(postResponse.jsonResponse.get('message'))
 
         postData = postResponse.jsonResponse.get('data')
 
         # Get post comments
         commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
-        if commentsResponse.httpCode != 200: self.display_error(response.jsonResponse.get('message'))
-
+        if commentsResponse.httpCode != 200: self.display_error(commentsResponse.jsonResponse.get('message'))
         postData["comments"] = commentsResponse.jsonResponse.get('data')
+
+        # Get post user
+        usersResponse = self.userRequests.get_by_id(postData.get("user_id"))
+        if usersResponse.httpCode != 200: self.display_error(usersResponse.jsonResponse.get('message'))
+        postData["user"] = usersResponse.jsonResponse.get('data')
+
 
         posts_string = self.textGenerator.post(postData)
         self.configClass.current_screen = posts_string
@@ -276,6 +281,10 @@ class PublicService:
         self.configClass.mode = MODES.EDIT
 
     def new_post(self):
+
+        if not self.configClass.current_user or not self.configClass.current_user.get('is_moderator'):
+            self.display_error("You are not logged-in or does not have the privileges to post something.")
+
         self.start_type()
 
         categories = self.categoryRequests.get_all()
@@ -300,7 +309,7 @@ class PublicService:
             "title": post_title,
             "content": post_content,
             "category_id": categories_list[post_category-1][0],
-            "user_id": "mocado"
+            "user_id": self.configClass.current_user.get('id')
         }
         response = self.postRequests.post_new(post_payload)
 
@@ -310,6 +319,10 @@ class PublicService:
             self.view_post(response.jsonResponse.get('data').get('id'))
 
     def new_category(self):
+
+        if not self.configClass.current_user or not self.configClass.current_user.get('is_super'):
+            self.display_error("You are not logged-in or does not have the privileges to create a new category.")
+
         self.start_type()
 
         category_name = input("\n Category name: \n> ")
@@ -331,6 +344,10 @@ class PublicService:
             self.view_category(response.jsonResponse.get('data').get('id'))
 
     def new_comment(self):
+
+        if not self.configClass.current_user:
+            self.display_error("Please login before commenting.")
+
         if isinstance(self.configClass.current_posts, list):
             self.display_error("Please open a post to start commenting.")
 
@@ -343,7 +360,7 @@ class PublicService:
         self.end_type()
 
         post_payload = {
-            "user_id": "Caio",
+            "user_id": self.configClass.current_user.get('id'),
             "post_id": post_id,
             "content": comment_content
         }

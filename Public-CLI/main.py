@@ -69,7 +69,7 @@ class AskeeCLI:
 
         if self.configs.current_user:
             print(
-                f"Logged in as: {self.configs.current_user.get('username')}"
+                f"Logged in as: {self.configs.current_user.get('username')}\n"
             )
 
         match display_mode:
