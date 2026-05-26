@@ -7,6 +7,8 @@ class TextGenerator:
     def fill_remaining_space(self, string, divide_ammount=1):
         divide_ammount = divide_ammount if divide_ammount != 0 else 1
         remaining_space = round((self.configs.terminal_height / divide_ammount) - string.count('\n'))
+        remaining_space -= 3 if self.configs.current_user else 0 # account for "logged in as" message
+
         return "".join('\n' for i in range(remaining_space))
 
     def start_screen(self):
@@ -59,12 +61,23 @@ class TextGenerator:
         return string
 
     def post(self, post):
-        string = f" POST # {post["title"]}\n\n"
+        max_width = self.configs.terminal_width-2
+        content_size = len(post["content"])
+        fill_size = content_size if content_size <= max_width else max_width
 
-        string += f"  {post["content"]}\n"
+        user = post.get('user')
 
-        string += "\n"
-        string += f"{'-' * self.configs.terminal_width}\n\n"
+        string = f"{user_str} | {post["title"]}\n\n"
+
+        string += '┌' + ('-' * (fill_size)) + '┐\n'
+        string += '|\n'
+
+        for i in range(0, content_size, max_width):
+            string += f"|  {post["content"][i:i+max_width]}\n"
+
+        string += "|\n"
+        string += '└' + ('-' * (fill_size)) + '┘\n\n'
+
         string += self.comments(post['comments'], fill=False)
 
         string += "\n"
