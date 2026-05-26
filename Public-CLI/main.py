@@ -24,14 +24,14 @@ class AskeeCLI:
         self.commands = Commands(self.public_service)
         self.actions = Actions(self.public_service)
 
-        self.configs.current_screen = self.text_generator.start_screen()
+        self.configs.current_screen.add_set(self.text_generator.start_screen())
         self.clear_display()
         self.reload_display("instant")
 
     def reload_display(self, display_mode="one-liner"):
         self.clear_display()
         self._display(
-            self.configs.current_screen,
+            self.configs.current_screen.get(),
             display_mode
             )
 

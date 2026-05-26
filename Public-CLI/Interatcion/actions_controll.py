@@ -24,6 +24,7 @@ class Actions:
     CHANGE_COLOR_L = Action(keys.LEFT, "change_app_color", '←', "Changes the CLI color", direction='right')
     CHANGE_COLOR_R = Action(keys.RIGHT, "change_app_color", '→', "Changes the CLI color", direction='left')
     TOGGLE_ANIMATION = Action(keys.TAB, "toggle_animations", '⭾', "Disable/Enables the CLI animations")
+    RETURN = Action(keys.CTRL_Z, "undo_screen", 'Ctrl+Z', "Returns to the previous screen")
     EXIT = Action(None, None, 'ctrl+c', "Exits")
     BACKSPACE      = Action(keys.BACKSPACE, "backspace_action", hidden=True)
 

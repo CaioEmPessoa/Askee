@@ -46,6 +46,10 @@ class PublicService:
             self.mainClass.user_input.pop()
             self.mainClass.display_user_input()
 
+    def undo_screen(self):
+        self.configClass.current_screen.undo()
+        self.mainClass.reload_display()
+
     # ============ COMMAND VIEW FUNCTIONS ============
     def display_error(self, error_msg):
         error_logo = ERRORS.DEFAULT #TODO: change this to a random later
@@ -63,7 +67,7 @@ class PublicService:
 
     def view_help(self):
         help_string = self.textGenerator.help_screen()
-        self.configClass.current_screen = help_string
+        self.configClass.current_screen.add_set(help_string)
 
         self.mainClass.reload_display("left-right-char")
 
