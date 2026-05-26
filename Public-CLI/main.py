@@ -6,6 +6,7 @@ import sys
 import tty
 import os
 
+from MementoService import Originator, Caretaker
 from Interatcion.cli_configs import CliConfigs
 from Interatcion.actions_controll import MODES, Actions, Commands
 from Interatcion.style_constants import COLORS, LOGOS
@@ -16,6 +17,10 @@ class AskeeCLI:
     def __init__(self, configs):
         self.configs = configs
 
+        self.originator = Originator("")
+        self.caretaker = Caretaker()
+
+        self.caretaker.add_memento(self.originator.create_memento())
         # Interaction variables
         self.user_input = self.configs.user_input
 
@@ -44,6 +49,24 @@ class AskeeCLI:
         while self.configs.mode == MODES.EDIT:
 
             current_char = readkey()
+            if current_char == "~":
+                # salva o estado atual antes de voltar
+                self.originator.set_state("".join(self.user_input))
+                if len(self.caretaker._mementos) > 0:
+                    memento = self.caretaker._mementos.pop()
+                    self.originator.restore_from_memento(memento)
+                    self.user_input.clear()
+                    self.user_input.extend(list(self.originator.get_state()))
+                    self.display_user_input()
+                    continue
+                else:
+                    #se for a primeira palavra ele apaga tambem (como ele teoricamente apaga só se for diferente de alguma letra)
+                    self.user_input.clear()
+                    self.originator.set_state("")
+
+                self.display_user_input()
+                continue
+            
             if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
                 continue
@@ -57,8 +80,14 @@ class AskeeCLI:
             if current_char == "\n":
                 print("command not found! Type 'help' to see the list of the available commands.", end="\r")
                 continue
-
+            
+            #pegar tudo que n for letra nem numero
+            if not current_char.isalnum():
+                self.originator.set_state("".join(self.user_input))
+                self.caretaker.add_memento(self.originator.create_memento())
             self.user_input.append(current_char)
+
+            self.originator.set_state("".join(self.user_input))
             self.display_user_input()
 
     def _display(self, string, display_mode="instant"):
