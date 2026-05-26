@@ -20,7 +20,7 @@ class RequestReturn: # not really that much usefull. Made cause it was fun
         return self.getJsonResponse().get('status')
 
     def getJsonResponse(self):
-        return json.loads(self.response.text)
+        return self.response.json()
 
 class Requests:
     def __init__(self, root=""):
@@ -31,7 +31,6 @@ class Requests:
         return f"{self.start_path}{"/" if path else ""}{path}"
 
     def get_request(self, path="", params={}):
-        print(self._build_path(path))
         return RequestReturn( requests.get(
             url=self._build_path(path),
             params= params
@@ -41,12 +40,12 @@ class Requests:
         return RequestReturn( requests.post(
             url=self._build_path(path),
             params= params,
-            data=body
+            json=body
         ) )
 
     def delete_request(self, path="", params={}, body={}):
         return RequestReturn( requests.post(
             url=self._build_path(path),
             params= params,
-            data=body
+            json=body
         ) )
