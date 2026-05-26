@@ -12,10 +12,15 @@ class PublicService:
 
         self.postRequests = Post()
         self.userRequests = Users()
+        self.authRequests = Auth()
         self.commentRequests = Comment()
         self.categoryRequests = Category()
 
     # ============ ACTIONS FUNCTIONS ============
+    def toggle_animations(self):
+        self.configClass.animations = not self.configClass.animations
+        print(f"Animations {"enabled" if self.configClass.animations else "disabled"}!", end="\r")
+
     def toggle_app_view(self):
         return
         # modes will not function as I first intended. TODO: change this function, probably remove it.
