@@ -128,13 +128,13 @@ class PublicService:
         # Get post comments
         commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))
         if commentsResponse.httpCode != 200: self.display_error(commentsResponse.jsonResponse.get('message'))
-        postData["comments"] = commentsResponse.jsonResponse.get('data')
+        postData["comments"] = self.append_comment_user(
+            commentsResponse.jsonResponse.get('data')
+        )
 
         # Get post user
         usersResponse = self.userRequests.get_by_id(postData.get("user_id"))
-        if usersResponse.httpCode != 200: self.display_error(usersResponse.jsonResponse.get('message'))
         postData["user"] = usersResponse.jsonResponse.get('data')
-
 
         posts_string = self.textGenerator.post(postData)
         self.configClass.current_screen = posts_string
@@ -187,13 +187,16 @@ class PublicService:
 
         self.mainClass.reload_display()
 
-    def view_comments(self, postId):
-        getAllComments = self.commentRequests.get_all().get("data")
+    def append_comment_user(self, comments):
+        for comment in comments: # get user info
+            usersResponse = self.userRequests.get_by_id(comment.get("user_id"))
+            if usersResponse:
+                comment.update({
+                    'user': usersResponse.jsonResponse.get('data')
+                    })
 
-        comments_string = self.textGenerator.comments(getAllComments)
-        self.configClass.current_screen = comments_string
+        return comments
 
-        self.mainClass.reload_display()
 
     def view_post_comments(self, postId):
         commentsResponse = self.commentRequests.get_comments_by_post_id(postData.get("id"))

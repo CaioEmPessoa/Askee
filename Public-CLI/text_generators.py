@@ -15,8 +15,11 @@ class TextGenerator:
         string = self.configs.current_logo # start string
         string += "\n"
         string += " Type 'help' for help.\n"
+        string += " Press 'Ctrl+C' to exit.\n\n"
+
         string += '   ↑ ↓ Change the logo\n'
         string += '   ← → Change CLI colors\n'
+        string += '    ⭾ Turns the program boring (toggles animation)\n'
 
         string += self.fill_remaining_space(string)
         return string
@@ -67,8 +70,7 @@ class TextGenerator:
 
         user = post.get('user')
 
-        if user:
-            user_str = f"[{user.get('icon')}] {user.get('username')} "
+        user_str = f"[{user.get('icon')}] {user.get('username')} " if user else 'User not found'
 
         string = f"{user_str} | {post["title"]}\n\n"
 
@@ -114,8 +116,13 @@ class TextGenerator:
         if not comments: string += "  Nenhum comentário encontrado!\n"
         if not comments: string += "  Comece postando algo com o command 'comment'!"
 
+
         for comment in comments:
-            string += f"[!!!] - Name:\n"
+            comment_user = comment.get('user')
+            if comment_user:
+                string += f"[{comment_user.get('icon')}] - {comment_user.get('username')}:\n"
+            else:
+                string += "[?>?] Anon:\n"
             string += f"  {comment["content"]}\n\n"
 
             third_size = round(self.configs.terminal_width/3)
