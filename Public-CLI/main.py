@@ -1,4 +1,4 @@
-from getkey import getkey
+from readchar import readkey
 from time import sleep
 import termios
 import shutil
@@ -43,7 +43,7 @@ class AskeeCLI:
         # more than one instanec of this function run at the same time
         while self.configs.mode == MODES.EDIT:
 
-            current_char = getkey()
+            current_char = readkey()
             if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
                 continue

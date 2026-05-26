@@ -1,4 +1,4 @@
-from getkey import keys
+from readchar import key as keys
 from enum import StrEnum
 
 class MODES(StrEnum):
