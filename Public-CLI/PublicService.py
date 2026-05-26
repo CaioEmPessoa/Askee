@@ -203,11 +203,73 @@ class PublicService:
 
     # ============ COMMAND INSERT FUNCTIONS ============
 
-    def start_type(self, clean=True):
+    def log_in(self):
+
+        self.start_type(remaining_space=100)
+
+        print("Welcome back to askee! \n")
+        print("Please fill as the following to login back to your user: \n")
+
+        user_mail = input("\n Email: \n> ")
+        user_password = input("\n Password: \n> ")
+
+        self.end_type()
+
+        post_payload = {
+            "email": user_mail,
+            "password": user_password
+        }
+        login_response = self.authRequests.login(post_payload)
+
+        if login_response.httpCode != 200: self.display_error(login_response.jsonResponse.get('message'))
+
+        self.configClass.current_user = login_response.jsonResponse.get('data')
+
+        self.view_home()
+
+
+    def sign_up(self):
+
+        self.start_type(remaining_space=100)
+
+        print("Welcome to askee! \n")
+        print("Please fill as the following to create your new user: \n")
+
+        user_mail = input("\n Email: \n> ")
+        user_password = input("\n Password: \n> ")
+        user_name = input("\n Username: \n> ")
+        user_icon = input("\n Icon: \n> ")
+        user_about = input("\n About: \n> ")
+
+        user_question_one = input("\nDo you know the secret question? 0.0\n") == "yes"
+        user_question_two = input("\n What is clear and salty? \n") == "lagrima" if user_question_one else False
+
+        self.end_type()
+
+        post_payload = {
+            "email":user_mail,
+            "password":user_password,
+            "name":user_name,
+            "username":user_name,
+            "icon":user_icon,
+            "about":user_about,
+            "is_moderator":user_question_one,
+            "is_super":user_question_two
+        }
+
+        signing_response = self.authRequests.signup(post_payload)
+
+        if signing_response.httpCode != 200: self.display_error(signing_response.jsonResponse.get('message'))
+
+        input("You Signed-In sucessfully! On pressing 'enter' now you will be prompted to log-in with your newly created user.")
+
+        self.log_in()
+
+    def start_type(self, clean=True, remaining_space=4):
         self.configClass.mode = MODES.VIEW
 
         if clean:
-            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", 4) #TODO: change this view
+            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", remaining_space) #TODO: change this view
             self.mainClass.reload_display("instant")
 
     def end_type(self):

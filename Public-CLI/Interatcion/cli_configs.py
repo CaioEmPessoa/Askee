@@ -16,6 +16,7 @@ class CliConfigs():
         self.animations = True
         self.command = None
         self.user_input = []
+        self.current_user = {}
         self.current_screen = ""
 
         self.current_categories = []

@@ -4,9 +4,9 @@ class AuthRequests(Requests):
     def __init__(self):
         super().__init__("auth")
 
-    def signin(self, body={}):
+    def signup(self, body={}):
         return self.post_request(
-            path="sign-in",
+            path="sign-up",
             body=body
         )
 

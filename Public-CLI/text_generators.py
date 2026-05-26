@@ -5,6 +5,7 @@ class TextGenerator:
         self.configs = configs
 
     def fill_remaining_space(self, string, divide_ammount=1):
+        divide_ammount = divide_ammount if divide_ammount != 0 else 1
         remaining_space = round((self.configs.terminal_height / divide_ammount) - string.count('\n'))
         return "".join('\n' for i in range(remaining_space))
 

@@ -31,7 +31,7 @@ class AskeeCLI:
     def reload_display(self, display_mode="one-liner"):
         self.clear_display()
         self._display(
-            self.configs.current_color + self.configs.current_screen,
+            self.configs.current_screen,
             display_mode
             )
 
@@ -62,6 +62,16 @@ class AskeeCLI:
             self.display_user_input()
 
     def _display(self, string, display_mode="instant"):
+        print(self.configs.current_color)
+
+        if not self.configs.animations:
+            display_mode = "instant"
+
+        if self.configs.current_user:
+            print(
+                f"Logged in as: {self.configs.current_user.get('username')}"
+            )
+
         match display_mode:
             case "one-liner":
                 for line in string.split("\n"):
