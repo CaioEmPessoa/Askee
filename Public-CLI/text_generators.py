@@ -1,8 +1,23 @@
+from datetime import datetime
+
 from Interatcion.actions_controll import Commands, Actions
 
 class TextGenerator:
     def __init__(self, configs):
         self.configs = configs
+
+    def _convert_time(self, date_string):
+        return datetime.strptime(date_string, "%Y-%m-%d %H:%M").strftime("%d/%m/%Y - %H:%M")
+
+    def _write_at_end(self, original, end):
+        end_width = self.configs.terminal_width - len(original) - len(end)
+        spaces = " " * end_width
+        return original + spaces + end
+
+    def _middle_divider(self):
+        third_size = round(self.configs.terminal_width/3)
+        divider_string = f"{' ' * third_size}{'-' * third_size}{' ' * third_size}\n"
+        return divider_string
 
     def fill_remaining_space(self, string, divide_ammount=1):
         divide_ammount = divide_ammount if divide_ammount != 0 else 1
@@ -92,16 +107,26 @@ class TextGenerator:
         return string
 
     def posts(self, posts, fill=True):
-        string = "Posts :\n\n"
+        string = "\n\n"
 
         if not posts: string += "  Nenhum post encontrado!"
 
+        string += f"\n{'-' * self.configs.terminal_width}\n\n"
+
         for post in posts:
-            string += f"  {post["tmp_id"]} - {post["title"]}\n"
-            string += f"{'-'*(len(post['title'])+10)}\n"
+            post_date = self._convert_time(post.get('data'))
+
+            headline  = f"  {post["tmp_id"]} - {post["title"]}"
+
+            string += self._write_at_end(headline, post_date) + "\n"
+
+            string += f"{self._middle_divider()}\n"
             string += f"  {post["content"]}\n"
 
-            string += f"\n\n{'-' * self.configs.terminal_width}\n\n"
+            if post.get('comments'):
+                string += f"{len(post.get('comments'))} comments..."
+
+            string += f"\n{'-' * self.configs.terminal_width}\n\n"
 
             string += "\n"
 
@@ -116,17 +141,22 @@ class TextGenerator:
         if not comments: string += "  Nenhum comentário encontrado!\n"
         if not comments: string += "  Comece postando algo com o command 'comment'!"
 
-
+        user_header_string = ""
         for comment in comments:
             comment_user = comment.get('user')
             if comment_user:
-                string += f"[{comment_user.get('icon')}] - {comment_user.get('username')}:\n"
+                user_header_string = f"[{comment_user.get('icon')}] - {comment_user.get('username')}:"
             else:
-                string += "[?>?] Anon:\n"
+                user_header_string = "[?>?] Anon:"
+
+            comment_date = self._convert_time(comment.get('data'))
+
+            header = self._write_at_end(user_header_string, comment_date)
+
+            string += header + "\n"
             string += f"  {comment["content"]}\n\n"
 
-            third_size = round(self.configs.terminal_width/3)
-            string += f"{' ' * third_size}{'-' * third_size}{' ' * third_size}\n\n"
+            string += self._middle_divider() + "\n"
             string += "\n"
 
         if fill:
@@ -135,11 +165,14 @@ class TextGenerator:
         return string
 
     def category(self, category, posts):
-        string = "Categoria :\n"
+        fill_size = self.configs.terminal_width
 
+        string = "\n\n"
+
+        string += '┌' + ('-' * (fill_size)) + '┐\n\n'
         string += f"   [{category['icon']}] - {category["name"]}\n"
-        string += f"   Descrição : {category["description"]}\n"
-        string += "\n"
+        string += f"   {category["description"]}\n\n"
+        string += '└' + ('-' * (fill_size)) + '┘'
 
         string += self.posts(posts, fill=False)
 
@@ -154,7 +187,7 @@ class TextGenerator:
 
         for category in categories:
             string += f"{category['tmp_id']}  [{category['icon']}] - {category["name"]}\n"
-            string += f"   Descrição : {category["description"]}\n"
+            string += f"  ~ {category["description"]} ~\n"
             string += "\n"
 
         string += self.fill_remaining_space(string)

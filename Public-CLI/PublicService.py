@@ -157,7 +157,7 @@ class PublicService:
     def view_category(self, id=None):
 
         if not id:
-            if not self.configClass.current_categories:
+            if not self.configClass.current_categories or not isinstance(self.configClass.current_categories, list):
                 self.view_categories()
             self.start_type(clean=False)
 
@@ -180,6 +180,7 @@ class PublicService:
         for i in range(1, len(postsData)+1):
             postsData[i-1].update({"tmp_id": i})
 
+        self.configClass.current_categories = categoryData
         self.configClass.current_posts = postsData
 
         category_string = self.textGenerator.category(categoryData, postsData)
@@ -210,6 +211,10 @@ class PublicService:
         self.mainClass.reload_display()
 
     # ============ COMMAND INSERT FUNCTIONS ============
+
+    def log_off(self):
+        self.configClass.current_user = []
+        self.view_home()
 
     def log_in(self):
 
@@ -249,8 +254,8 @@ class PublicService:
         user_icon = input("\n Icon: \n> ")
         user_about = input("\n About: \n> ")
 
-        user_question_one = input("\nDo you know the secret question? 0.0\n") == "yes"
-        user_question_two = input("\n What is clear and salty? \n") == "lagrima" if user_question_one else False
+        user_question_one = input("\n Do you know the secret question? 0.0\n") == "yes"
+        user_question_two = input("\n How much is 2+2? \n") == "22" if user_question_one else False
 
         self.end_type()
 
@@ -293,16 +298,22 @@ class PublicService:
         categories = self.categoryRequests.get_all()
         if not categories.get('data'): self.display_error(categories.get('message'))
 
-        print("Select the category of your post:")
-        categories_list = []
-        category_internal_id = 1
-        for category in categories.get('data'):
-            categories_list.append((category.get('id'), category_internal_id))
-            print(category_internal_id, category.get('name'))
+        if self.configClass.current_categories and not isinstance(self.configClass.current_categories, list):
+            category_id = self.configClass.current_categories.get('id')
+            print(f"Posting at '{self.configClass.current_categories.get('name')}'...")
+        else:
+            print("Select the category of your post:")
+            categories_list = []
+            category_internal_id = 1
+            for category in categories.get('data'):
+                categories_list.append((category.get('id'), category_internal_id))
+                print(category_internal_id, category.get('name'))
 
-            category_internal_id += 1
+                category_internal_id += 1
 
-        post_category = int(input("\n> "))
+            post_category = int(input("\n> "))
+            category_id = categories_list[post_category-1][0]
+
         post_title = input("\n Post Title: \n> ")
         post_content = input("\n Post content: \n> ")
 
@@ -311,7 +322,7 @@ class PublicService:
         post_payload = {
             "title": post_title,
             "content": post_content,
-            "category_id": categories_list[post_category-1][0],
+            "category_id": category_id,
             "user_id": self.configClass.current_user.get('id')
         }
         response = self.postRequests.post_new(post_payload)

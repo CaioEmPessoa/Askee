@@ -66,7 +66,8 @@ class Commands:
     HOME = Command("home", "view_home", "Shows the home")
 
     SIGN_IN = Command("sign-in", "sign_up", "Sign-in into the askee network")
-    LOGIN = Command("login", "log_in", "Log-in into the askee network")
+    LOGIN = Command("log-in", "log_in", "Log-in into the askee network")
+    LOGOFF = Command("log-off", "log_off", "Sign-in into the askee network")
 
     VIEW_POSTS = Command("view all posts", "view_posts", "Shows all current posts")
     VIEW_CATEGORIES = Command("view categories", "view_categories", "Shows all current categories")
