@@ -12,10 +12,10 @@ class APIResponse(BaseModel):
 
 # O que esperamos receber num body de sign-up
 class SignUpRequest(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(...)
     email: str
-    password: str = Field(..., min_length=6)
-    name: str = Field(..., min_length=1, max_length=100)
+    password: str = Field(...)
+    name: str = Field(...)
     icon: Optional[str] = None
     about: Optional[str] = None
     is_super: bool
