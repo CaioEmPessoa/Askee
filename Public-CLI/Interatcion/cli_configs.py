@@ -13,6 +13,7 @@ class CliConfigs():
 
         # Interaction variables
         self.mode = MODES.EDIT
+        self.animations = True
         self.command = None
         self.user_input = []
         self.current_screen = ""
