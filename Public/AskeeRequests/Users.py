@@ -1,5 +1,5 @@
-from .Requests import Requests
+from .AskeeRequestsBase import AskeeRequestsBase
 
-class UsersRequests(Requests):
+class UsersRequests(AskeeRequestsBase):
     def __init__(self):
         super().__init__("users")
