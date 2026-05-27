@@ -6,6 +6,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
 
+from AskeeRequests import *
+from Interatcion.configs import Configs
+
 from windows.login import Ui_jan_login
 from modules.cadastro import cadastro
 from modules.telaposts import telaposts
@@ -15,19 +18,28 @@ import os,sys
 class login(QDialog):
     def __init__(self, *args, **argvs):
         super(login,self).__init__(*args,**argvs)
+        self.usersRequests = Users()
+        self.authRequests = Auth()
+        self.configs = Configs()
+
         self.ui = Ui_jan_login()
         self.ui.setupUi(self)
         self.ui.log_butt_enter.clicked.connect(self.login)
         self.ui.log_butt_cadst.clicked.connect(self.tela_cadastro)
 
     def login(self):
-        usuario = "luca"
-        senha = "1234"
-
         user = self.ui.log_line_login.text()
         password = self.ui.log_line_passwd.text()
 
-        if user == usuario and senha == password:
+        login_response = self.authRequests.login({
+            "email": user,
+            "password": password
+        })
+
+        print(login_response.jsonResponse)
+
+        if login_response.httpCode == 200:
+            self.configs.current_user = login_response.jsonResponse.get('data')
             self.window = telaposts()
             self.window.show()
         else:
