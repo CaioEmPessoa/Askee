@@ -56,10 +56,11 @@ class Actions:
         return None
 
 class Command:
-    def __init__(self, name, method, description=""):
+    def __init__(self, name, method, description="", super_only=False):
         self.name = name
         self.method = method
         self.description = description
+        self.super_only = super_only
 
 class Commands:
     '''Commands that needs to be written in edit mode.'''
@@ -80,6 +81,8 @@ class Commands:
     NEW_POST = Command("new post", "new_post", "Add a new post")
     NEW_CATAEGORY = Command("new category", "new_category", "Add a new category")
     NEW_COMMENT = Command("comment", "new_comment", "Add a new comment into a post")
+
+    NEW_MOD_USER = Command("mod user", "mod_user", "Edit a user info to change its permissions", True)
 
     def __init__(self, public_service):
         self.publicService = public_service

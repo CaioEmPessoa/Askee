@@ -40,15 +40,15 @@ def get_me():
     user_data = {k: v for k, v in user.items() if k != "password"}
     return jsonify({"status": 200, "message": "OK", "data": user_data}), 200
 
-@user_api.put('/<id>')
-def update_user(id: str, body: UserUpdate):
+@user_api.route('/<id>', methods=['PUT'])
+def update_user(id):
     user = user_repository.get_by_id(id)
     if not user:
         return jsonify({"status": 404, "message": "Usuario nao encontrado."}), 404
-    data = body.model_dump(exclude_unset=True)
+    data = request.json
     response = user_repository.update_on_id(id, data)
     if response:
-        user_data = {k: v for k, v in response.items() if k != "password"}
+        user_data = {k: v for k, v in response.items() if k and k != "password"}
         return jsonify({"status": 200, "message": "Usuario atualizado com sucesso.", "data": user_data}), 200
     return jsonify({"status": 500, "message": "Houve um erro ao atualizar o usuario."}), 500
 

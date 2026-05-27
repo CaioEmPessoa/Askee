@@ -258,9 +258,6 @@ class PublicService:
         user_icon = input("\n Icon: \n> ")
         user_about = input("\n About: \n> ")
 
-        user_question_one = input("\n Do you know the secret question? 0.0\n") == "yes"
-        user_question_two = input("\n How much is 2+2? \n") == "22" if user_question_one else False
-
         self.end_type()
 
         post_payload = {
@@ -270,8 +267,8 @@ class PublicService:
             "username":user_name,
             "icon":user_icon,
             "about":user_about,
-            "is_moderator":user_question_one,
-            "is_super":user_question_two
+            "is_moderator":False,
+            "is_super":False
         }
 
         signing_response = self.authRequests.signup(post_payload)
@@ -388,3 +385,40 @@ class PublicService:
             self.display_error(response.jsonResponse.get('message'))
         else:
             self.view_post(post_id)
+
+    def mod_user(self):
+        # if not self.configClass.current_user or not self.configClass.current_user.get('is_super'):
+        #     self.display_error("You are not logged-in or does not have the privileges to this command.")
+
+        allUsers = self.userRequests.get_all().get('data')
+        biggest_name = max([len(i.get('username')) for i in allUsers])
+        user_counter = 0
+        self.start_type()
+        print("Please select the user to modify:\n")
+        for user in allUsers:
+            user_counter += 1
+            print("  {} - {:<{}} : {} {} {}".format(
+                user_counter,
+                user.get('username'),
+                biggest_name,
+                "is a mod" if user.get('is_moderator') else "",
+                "and" if user.get('is_super') and user.get('is_moderator') else "",
+                "is a super" if user.get('is_super') else ""
+            ))
+
+        selected_user = int(input('\n> '))
+
+        is_mod = input("Will this user be a mod? (y/N)\n> ")
+        is_super = input("Will this user be a super? (y/N)\n> ")
+
+        self.userRequests.update(
+            allUsers[selected_user-1].get('id'),
+            {
+                "is_moderator": is_mod.upper() == "Y",
+                "is_super": is_super.upper() == "Y"
+            }
+        )
+
+        self.end_type()
+
+        self.view_home()
