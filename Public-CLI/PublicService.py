@@ -1,3 +1,4 @@
+from pwinput import pwinput
 
 from AskeeRequests import *
 
@@ -228,7 +229,7 @@ class PublicService:
         print("Please fill as the following to login back to your user: \n")
 
         user_mail = input("\n Email: \n> ")
-        user_password = input("\n Password: \n> ")
+        user_password = pwinput("\n Password: \n> ", mask="*")
 
         self.end_type()
 
@@ -253,7 +254,7 @@ class PublicService:
         print("Please fill as the following to create your new user: \n")
 
         user_mail = input("\n Email: \n> ")
-        user_password = input("\n Password: \n> ")
+        user_password = getpass("\n Password: \n> ", mask="*")
         user_name = input("\n Username: \n> ")
         user_icon = input("\n Icon: \n> ")
         user_about = input("\n About: \n> ")
