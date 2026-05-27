@@ -32,7 +32,7 @@ class PublicService:
         current_logo = self.configClass.current_logo
         self.configClass.current_logo = current_logo.previous() if direction=='left' else current_logo.next()
 
-        self.configClass.current_screen = self.textGenerator.start_screen()
+        self.configClass.current_screen.add_set(self.textGenerator.start_screen())
         self.mainClass.reload_display(display_mode)
 
     def change_app_color(self, direction='right'):
@@ -53,15 +53,15 @@ class PublicService:
     # ============ COMMAND VIEW FUNCTIONS ============
     def display_error(self, error_msg):
         error_logo = ERRORS.DEFAULT #TODO: change this to a random later
-        self.configClass.current_screen = self.textGenerator.error_screen(
+        self.configClass.current_screen.add_set(self.textGenerator.error_screen(
             error_logo, error_msg
-            )
+            ))
 
         self.mainClass.reload_display("left-right-char")
 
     def view_home(self):
         home_string = self.textGenerator.start_screen()
-        self.configClass.current_screen = home_string
+        self.configClass.current_screen.add_set(home_string)
 
         self.mainClass.reload_display("left-right-char")
 
@@ -80,7 +80,7 @@ class PublicService:
         self.configClass.current_posts = getAllPosts
 
         posts_string = self.textGenerator.posts(getAllPosts)
-        self.configClass.current_screen = posts_string
+        self.configClass.current_screen.add_set(posts_string)
 
         self.mainClass.reload_display()
 
@@ -106,7 +106,7 @@ class PublicService:
         self.configClass.current_posts = getPosts
 
         posts_string = self.textGenerator.posts(getPosts)
-        self.configClass.current_screen = posts_string
+        self.configClass.current_screen.add_set(posts_string)
 
         self.mainClass.reload_display()
 
@@ -141,7 +141,7 @@ class PublicService:
         postData["user"] = usersResponse.jsonResponse.get('data')
 
         posts_string = self.textGenerator.post(postData)
-        self.configClass.current_screen = posts_string
+        self.configClass.current_screen.add_set(posts_string)
         self.configClass.current_posts = postData
 
         self.mainClass.reload_display()
@@ -154,7 +154,7 @@ class PublicService:
 
         self.configClass.current_categories = getAllCategories
         categories_string = self.textGenerator.categories(getAllCategories)
-        self.configClass.current_screen = categories_string
+        self.configClass.current_screen.add_set(categories_string)
 
         self.mainClass.reload_display()
 
@@ -188,7 +188,7 @@ class PublicService:
         self.configClass.current_posts = postsData
 
         category_string = self.textGenerator.category(categoryData, postsData)
-        self.configClass.current_screen = category_string
+        self.configClass.current_screen.add_set(category_string)
 
         self.mainClass.reload_display()
 
@@ -210,7 +210,7 @@ class PublicService:
         commentsData = commentsResponse.jsonResponse.get('data')
 
         comments_string = self.textGenerator.comments(getAllComments)
-        self.configClass.current_screen += comments_string # += bc its used only at posts view. (or its supposed to)
+        self.configClass.current_screen.append(comments_string) # += bc its used only at posts view. (or its supposed to)
 
         self.mainClass.reload_display()
 
@@ -286,7 +286,7 @@ class PublicService:
         self.configClass.mode = MODES.VIEW
 
         if clean:
-            self.configClass.current_screen = self.textGenerator.fill_remaining_space("", remaining_space) #TODO: change this view
+            self.configClass.current_screen.add_set(self.textGenerator.fill_remaining_space("", remaining_space)) #TODO: change this view
             self.mainClass.reload_display("instant")
 
     def end_type(self):
