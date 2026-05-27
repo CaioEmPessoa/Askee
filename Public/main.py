@@ -7,10 +7,12 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
 
 from modules.login import login
+from modules.telaposts import telaposts
 import os,sys
 
 app = QApplication(sys.argv)
 if (QDialog.Accepted -- True):
+    # window = telaposts()
     window = login()
     window.show()
 sys.exit(app.exec_())

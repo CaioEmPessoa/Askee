@@ -6,7 +6,7 @@ class AskeeRequestsBase(Requests):
     def __init__(self, appname):
         super().__init__(appname)
 
-    def get_all(self):
+    def get_all(self): # esse foi o maior erro da minha vida
         try: r = self.get_request()
         except: return {"data": None, "statusCode": 500}
         return r.jsonResponse

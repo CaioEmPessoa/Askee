@@ -5,6 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtPrintSupport import *
 
+from AskeeRequests import *
 from Interatcion.configs import Configs
 
 from windows.telaposts import Ui_MainWindow
@@ -19,19 +20,22 @@ class telaposts(QMainWindow):
     def __init__(self, *args,**argvs):
         super(telaposts,self).__init__(*args,**argvs)
         self.configs = Configs()
+        self.api_posts = Post()
+        self.api_users = Users()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        print(
-            self.configs.current_user
-        )
-
         self.ui.label.setText(self.configs.current_user.get("username"))
+        self.ui.label.setText(self.configs.current_user.get("username"))
+        self.ui.textEdit.setText(self.configs.current_user.get("about"))
+        self.ui.textEdit.setEnabled(False)
+        self.ui.cad_box_icon.setText("  " + self.configs.current_user.get("icon"))
 
         self.ui.main_butt_post.clicked.connect(self.post)
         self.ui.main_butt_criarpost.clicked.connect(self.tela_criar_post)
 
+        self.configurar_layout_posts()
         # 5. Efetua o carregamento automático dos posts ao abrir a tela
         self.carregar_feed()
 
@@ -117,33 +121,27 @@ class telaposts(QMainWindow):
             user_id = p.get('userId') or p.get('user_id') or p.get('authorId') or p.get('author_id')
 
             # Valores de contingência recolhidos do próprio corpo do post
-            usuario_nome = p.get('username') or p.get('author') or p.get('user') or "Anônimo"
-            icone = p.get('userIcon') or p.get('icon') or ":)"
+            usuario_nome = p.get('username')
+            icone = p.get('icon')
 
             if user_id:
-                # Verifica cache para poupar processamento e rede
-                if user_id in self.user_cache:
-                    user_info = self.user_cache[user_id]
-                    usuario_nome = user_info.get('username') or user_info.get('name') or usuario_nome
-                    icone = user_info.get('icon') or icone
-                else:
-                    try:
-                        res = self.api_users.get_request(path=str(user_id))
-                        dados_user = res.jsonResponse
+                try:
+                    res = self.api_users.get_by_id(user_id)
+                    dados_user = res.jsonResponse
 
-                        user_info = dados_user.get('data') if isinstance(dados_user, dict) and 'data' in dados_user else dados_user
-                        if user_info and isinstance(user_info, dict):
-                            self.user_cache[user_id] = user_info
-                            usuario_nome = user_info.get('username') or user_info.get('name') or usuario_nome
-                            icone = user_info.get('icon') or icone
-                    except Exception:
-                        # Em caso de falha na requisição HTTP/JSON do utilizador,
-                        # o programa ignora silenciosamente mantendo os dados de contingência locais.
-                        pass
+                    user_info = dados_user.get('data') if isinstance(dados_user, dict) and 'data' in dados_user else dados_user
+                    if user_info and isinstance(user_info, dict):
+                        usuario_nome = user_info.get('username') or user_info.get('name') or usuario_nome
+                        icone = user_info.get('icon') or icone
+                except Exception:
+                    # Em caso de falha na requisição HTTP/JSON do utilizador,
+                    # o programa ignora silenciosamente mantendo os dados de contingência locais.
+                    pass
 
             titulo = p.get('title', 'Sem título')
 
             # Instancia o card de post estilizado
+            print(icone, usuario_nome, titulo)
             frame_post = self.criar_widget_de_post(icone, usuario_nome, titulo)
             self.posts_layout.addWidget(frame_post)
 
