@@ -21,3 +21,9 @@ class AskeeRequestsBase(Requests):
 
     def delete_id(self, id):
         return self.delete_request(id)
+
+    def update(self, id, body):
+        self.put_request(
+            id,
+            body=body
+        )
