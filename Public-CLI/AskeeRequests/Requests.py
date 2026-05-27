@@ -49,3 +49,10 @@ class Requests:
             params= params,
             json=body
         ) )
+
+    def put_request(self, path="", params={}, body={}):
+        return RequestReturn( requests.put(
+            url=self._build_path(path),
+            params= params,
+            json=body
+        ) )
