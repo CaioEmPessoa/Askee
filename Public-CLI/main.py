@@ -1,4 +1,4 @@
-from readchar import readkey
+from readchar import readkey, key
 from time import sleep
 import termios
 import shutil
@@ -31,7 +31,7 @@ class AskeeCLI:
 
         self.configs.current_screen.add_set(self.text_generator.start_screen())
         self.clear_display()
-        self.reload_display("instant")
+        self.reload_display("left-right-char")
 
     def reload_display(self, display_mode="one-liner"):
         self.clear_display()
@@ -49,7 +49,7 @@ class AskeeCLI:
         while self.configs.mode == MODES.EDIT:
 
             current_char = readkey()
-            if current_char == "~":
+            if current_char == key.CTRL_Z:
                 # salva o estado atual antes de voltar
                 self.originator.set_state("".join(self.user_input))
                 if len(self.caretaker._mementos) > 0:
@@ -66,7 +66,7 @@ class AskeeCLI:
 
                 self.display_user_input()
                 continue
-            
+
             if current_char in [action.key for action in self.actions]:
                 self.exec_action(current_char)
                 continue
@@ -80,7 +80,7 @@ class AskeeCLI:
             if current_char == "\n":
                 print("command not found! Type 'help' to see the list of the available commands.", end="\r")
                 continue
-            
+
             #pegar tudo que n for letra nem numero
             if not current_char.isalnum():
                 self.originator.set_state("".join(self.user_input))

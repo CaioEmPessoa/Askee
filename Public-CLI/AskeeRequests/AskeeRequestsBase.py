@@ -8,7 +8,7 @@ class AskeeRequestsBase(Requests):
 
     def get_all(self):
         try: r = self.get_request()
-        except: return {"data": None, "statusCode": 500}
+        except: return {"data": None, "statusCode": 500} # esse foi o maior erro da minha vida
         return r.jsonResponse
 
     def get_by_id(self, id):
