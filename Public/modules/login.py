@@ -28,22 +28,20 @@ class login(QDialog):
         self.ui.log_butt_cadst.clicked.connect(self.tela_cadastro)
 
     def login(self):
-        user = self.ui.log_line_login.text()
-        password = self.ui.log_line_passwd.text()
-
         login_response = self.authRequests.login({
-            "email": user,
-            "password": password
+            "email": self.ui.log_line_login.text(),
+            "password": self.ui.log_line_passwd.text()
         })
-
-        print(login_response.jsonResponse)
 
         if login_response.httpCode == 200:
             self.configs.current_user = login_response.jsonResponse.get('data')
             self.window = telaposts()
             self.window.show()
         else:
-            QMessageBox.warning(QMessageBox(),"login incorreto!")
+            err_msg = QMessageBox()
+            err_msg.setIcon(QMessageBox.Icon.Warning)
+            err_msg.setText("Login incorreto!")
+            err_msg.exec()
 
     def tela_cadastro(self):
         add = cadastro()
