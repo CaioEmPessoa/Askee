@@ -254,7 +254,7 @@ class PublicService:
         print("Please fill as the following to create your new user: \n")
 
         user_mail = input("\n Email: \n> ")
-        user_password = getpass("\n Password: \n> ", mask="*")
+        user_password = pwinput("\n Password: \n> ", mask="*")
         user_name = input("\n Username: \n> ")
         user_icon = input("\n Icon: \n> ")
         user_about = input("\n About: \n> ")
